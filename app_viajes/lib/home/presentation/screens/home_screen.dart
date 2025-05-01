@@ -49,6 +49,7 @@ class LoginScreen extends StatelessWidget {
                 final username = _usernameController.text;
                 final password = _passwordController.text;
                 print('Usuario: $username, Contraseña: $password');
+                context.push("/home");
               },
               child: Text('Iniciar Sesión'),
             ),
