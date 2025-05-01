@@ -55,7 +55,6 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16.0),
             TextButton(
               onPressed: () {
-                // Acción para registrarse
                 context.push("/registro");
               },
               child: Text('Registrarse'),
