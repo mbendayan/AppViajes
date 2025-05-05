@@ -1,3 +1,4 @@
+import 'package:app_viajes/home/presentation/screens/abm_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_travels_screen.dart';
 import 'package:app_viajes/home/presentation/screens/register.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +26,11 @@ final appRouter = GoRouter(
       name: 'verViaje',
       path: '/viaje',
       builder: (context, state) => HomeScreen(),
+    ),
+    GoRoute(
+      name: 'nuevoViaje',
+      path: '/nuevoViaje',
+      builder: (context, state) => ABMViajeScreen(),
     ),
   ],
 );
