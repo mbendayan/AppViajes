@@ -12,8 +12,15 @@ class GetTravelsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scafoldKey,
-      appBar: AppBar(title: const Text('Gestion de viajes')),
+      appBar: AppBar(title: const Text('Gestión de viajes')),
       body: const _HomeView(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push("/nuevoViaje");
+        },
+        tooltip: "Agregar Viaje",
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
