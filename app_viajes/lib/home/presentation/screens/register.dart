@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RegisterScreen(),
-    );
-  }
-}
-
 class RegisterScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  
   static const name = 'registro';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,13 +44,10 @@ class RegisterScreen extends StatelessWidget {
             SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
-                // Acción para registrarse
                 final username = _usernameController.text;
                 final email = _emailController.text;
                 final password = _passwordController.text;
-                print(
-                  'Usuario: $username, Correo: $email, Contraseña: $password',
-                );
+                print('Usuario: $username, Correo: $email, Contraseña: $password');
               },
               child: Text('Registrarse'),
             ),

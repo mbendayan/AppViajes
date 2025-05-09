@@ -1,3 +1,4 @@
+import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/register.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_viajes/home/presentation/screens/home_screen.dart';
@@ -15,5 +16,10 @@ final appRouter = GoRouter(
       path: '/registro',
       builder: (context, state) => RegisterScreen(),
     ),
+    GoRoute(
+      name: PreferencesScreen.name,
+      path: '/preferences',
+      builder: (context, state) => PreferencesScreen(),
+)
   ],
 );
