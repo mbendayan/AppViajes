@@ -2,14 +2,11 @@ import 'package:app_viajes/home/presentation/screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-void main() {
-  runApp(HomeScreen());
-}
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
+    return LoginScreen(); // Solo devuelve el contenido
   }
 }
 
@@ -56,9 +53,17 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16.0),
             TextButton(
               onPressed: () {
+                // Acción para registrarse
                 context.push("/registro");
               },
               child: Text('Registrarse'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Acción para ir a preferencias
+                context.push("/preferences");
+              },
+              child: Text('Preferencias'),
             ),
           ],
         ),
