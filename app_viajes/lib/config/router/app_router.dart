@@ -1,5 +1,4 @@
-
-import 'package:app_viajes/home/presentation/screens/preferences_screen.dart'
+import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/abm_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_travels_screen.dart';
 import 'package:app_viajes/home/presentation/screens/register.dart';
@@ -20,11 +19,10 @@ final appRouter = GoRouter(
       builder: (context, state) => RegisterScreen(),
     ),
     GoRoute(
-
       name: PreferencesScreen.name,
       path: '/preferences',
       builder: (context, state) => PreferencesScreen(),
-     ),
+    ),
     GoRoute(
       name: GetTravelsScreen.name,
       path: '/home',

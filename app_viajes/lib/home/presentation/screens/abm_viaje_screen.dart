@@ -12,6 +12,7 @@ class _ABMViajeScreenState extends State<ABMViajeScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _destinoController = TextEditingController();
+  final _TituloController = TextEditingController();
   final _costoController = TextEditingController();
   final _descripcionController = TextEditingController();
   DateTime? _fechaInicio;
@@ -71,6 +72,15 @@ class _ABMViajeScreenState extends State<ABMViajeScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _TituloController,
+                    decoration: const InputDecoration(labelText: "Título"),
+                    validator:
+                        (value) =>
+                            value == null || value.isEmpty
+                                ? "Campo requerido"
+                                : null,
+                  ),
+                  TextFormField(
                     controller: _destinoController,
                     decoration: const InputDecoration(labelText: "Destino"),
                     validator:
@@ -110,6 +120,14 @@ class _ABMViajeScreenState extends State<ABMViajeScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.timer),
+                      const SizedBox(width: 10),
+                      Text("Duración: $_duracion días"),
+                    ],
+                  ),
                   TextFormField(
                     controller: _costoController,
                     decoration: const InputDecoration(
@@ -121,14 +139,6 @@ class _ABMViajeScreenState extends State<ABMViajeScreen> {
                             value == null || value.isEmpty
                                 ? "Campo requerido"
                                 : null,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Icon(Icons.timer),
-                      const SizedBox(width: 10),
-                      Text("Duración: $_duracion días"),
-                    ],
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
