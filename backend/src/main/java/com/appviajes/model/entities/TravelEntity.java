@@ -1,5 +1,6 @@
 package com.appviajes.model.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +31,7 @@ public class TravelEntity {
 
   private LocalDateTime creationDate;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "travel_id", referencedColumnName = "id")
   private List<TravelStepEntity> steps;
 }

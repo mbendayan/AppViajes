@@ -1,6 +1,5 @@
 package com.appviajes.service;
 
-import static com.appviajes.util.JsonUtils.toJson;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.parse;
 
@@ -71,7 +70,6 @@ public class TravelService {
   private TravelEntity buildTravelEntity(CreateTravelRequest request, JSONObject json) {
     TravelEntity travelEntity = buildAndSaveTravelEntity(request);
     buildAndSaveTravelStepEntity(travelEntity, json.getJSONArray("steps"));
-    log.info("TravelEntity built [{}]", toJson(travelEntity));
     return travelEntity;
   }
 
@@ -82,6 +80,7 @@ public class TravelService {
     travelEntity.setDestination(request.destination());
     travelEntity.setCreationDate(LocalDateTime.now());
     travelEntity.setSteps(new LinkedList<>());
+    log.info("Travel built successfully");
     return travelEntity;
   }
 
@@ -98,5 +97,6 @@ public class TravelService {
       stepEntity.setRecommendations(stepJson.getString("recommendations"));
       travelEntity.getSteps().add(stepEntity);
     });
+    log.info("Steps builded and added to travel successfully");
   }
 }

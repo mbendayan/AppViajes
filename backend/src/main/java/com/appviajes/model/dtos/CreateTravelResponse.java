@@ -1,5 +1,6 @@
 package com.appviajes.model.dtos;
 
+import com.appviajes.model.entities.TravelEntity;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import java.math.BigDecimal;
@@ -14,6 +15,28 @@ public record CreateTravelResponse(
     String destination,
     List<CreateTravelStepResponse> steps
 ) {
+
+  public CreateTravelResponse(TravelEntity entity) {
+    this(
+        entity.getId(),
+        entity.getName(),
+        entity.getPreferences(),
+        entity.getDestination(),
+        entity.getSteps().stream().map(stepEntity ->
+            new CreateTravelStepResponse(
+                stepEntity.getId(),
+                stepEntity.getDescription(),
+                stepEntity.getStartDate(),
+                stepEntity.getEndDate(),
+                stepEntity.getLocation(),
+                stepEntity.getName(),
+                stepEntity.getCost(),
+                stepEntity.getRecommendations()
+            )
+        ).toList()
+    );
+  }
+
   @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
   public record CreateTravelStepResponse(
       Long id,
@@ -24,5 +47,7 @@ public record CreateTravelResponse(
       String name,
       BigDecimal cost,
       String recommendations
-  ) { }
+  ) {
+
+  }
 }
