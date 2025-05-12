@@ -1,24 +1,34 @@
-import 'package:app_viajes/home/presentation/screens/register.dart';
+import 'package:app_viajes/home/presentation/providers/user_provider.dart';
+import 'package:app_viajes/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-void main() {
-  runApp(HomeScreen());
-}
-
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
+  Widget build(BuildContext context, WidgetRef ref) {
+    return LoginScreen(); // Solo devuelve el contenido
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final userProvider = StateNotifierProvider<UserNotifier, User>(
+    (ref) => UserNotifier(
+      User(
+        username: '',
+        id: '',
+        email: '',
+        password: '',
+        registerDate: DateTime.now(),
+      ),
+    ),
+  );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userNotifier = ref.read(userProvider.notifier);
     return Scaffold(
       appBar: AppBar(title: Text('Login'), centerTitle: true),
       body: Padding(
@@ -44,11 +54,15 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 24.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Acción para iniciar sesión
                 final username = _usernameController.text;
                 final password = _passwordController.text;
+
                 print('Usuario: $username, Contraseña: $password');
+
+                final userNotifier = ref.read(userProvider.notifier);
+                await userNotifier.login("usuario", "clave");
                 context.push("/home");
               },
               child: Text('Iniciar Sesión'),
@@ -56,9 +70,17 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16.0),
             TextButton(
               onPressed: () {
+                // Acción para registrarse
                 context.push("/registro");
               },
               child: Text('Registrarse'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Acción para ir a preferencias
+                context.push("/preferences");
+              },
+              child: Text('Preferencias'),
             ),
           ],
         ),
