@@ -1,9 +1,11 @@
 package com.appviajes.service;
 
+import static com.appviajes.model.enums.ErrorEnum.TRAVEL_NOT_FOUND;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.parse;
 
 import com.appviajes.client.AIClient;
+import com.appviajes.exception.RestException;
 import com.appviajes.model.dtos.CreateTravelRequest;
 import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelStepEntity;
@@ -44,6 +46,12 @@ public class TravelService {
               }
           """;
 
+  public TravelEntity findTravel(Long id) {
+    return travelRepository
+        .findWithStepsById(id)
+        .orElseThrow(() -> new RestException(TRAVEL_NOT_FOUND));
+  }
+
   public TravelEntity createTravel(CreateTravelRequest request) {
     String prompt = buildPrompt(request);
     String response = sendPrompt(prompt);
@@ -68,12 +76,12 @@ public class TravelService {
   }
 
   private TravelEntity buildTravelEntity(CreateTravelRequest request, JSONObject json) {
-    TravelEntity travelEntity = buildAndSaveTravelEntity(request);
-    buildAndSaveTravelStepEntity(travelEntity, json.getJSONArray("steps"));
+    TravelEntity travelEntity = buildTravelEntity(request);
+    buildTravelStepEntity(travelEntity, json.getJSONArray("steps"));
     return travelEntity;
   }
 
-  private TravelEntity buildAndSaveTravelEntity(CreateTravelRequest request) {
+  private TravelEntity buildTravelEntity(CreateTravelRequest request) {
     TravelEntity travelEntity = new TravelEntity();
     travelEntity.setName(request.name());
     travelEntity.setPreferences(join(",", request.preferences()));
@@ -84,7 +92,7 @@ public class TravelService {
     return travelEntity;
   }
 
-  private void buildAndSaveTravelStepEntity(TravelEntity travelEntity, JSONArray steps) {
+  private void buildTravelStepEntity(TravelEntity travelEntity, JSONArray steps) {
     steps.forEach(step -> {
       JSONObject stepJson = new JSONObject(step.toString());
       TravelStepEntity stepEntity = new TravelStepEntity();

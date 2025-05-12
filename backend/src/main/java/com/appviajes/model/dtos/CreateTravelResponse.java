@@ -33,8 +33,7 @@ public record CreateTravelResponse(
                 stepEntity.getCost(),
                 stepEntity.getRecommendations()
             )
-        ).toList()
-    );
+        ).toList());
   }
 
   @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
