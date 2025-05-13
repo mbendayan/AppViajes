@@ -1,10 +1,10 @@
-CREATE TYPE travel_status AS ENUM ('in_progress', 'finished', 'cancelled');
-
 CREATE TABLE travels
 (
     id            BIGSERIAL PRIMARY KEY,
     name          VARCHAR(50)  NOT NULL,
     destination   VARCHAR(100) NOT NULL,
+    start_date    TIMESTAMPTZ  NOT NULL,
+    end_date      TIMESTAMPTZ  NOT NULL,
     preferences   VARCHAR(150) NOT NULL,
     creation_date TIMESTAMPTZ  NOT NULL DEFAULT now()
 );

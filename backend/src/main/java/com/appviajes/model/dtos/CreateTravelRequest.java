@@ -11,4 +11,5 @@ public record CreateTravelRequest(
     String destination,
     LocalDateTime startDate,
     LocalDateTime endDate,
+    // TODO: sanitize preferences with enum in request and in postgres
     List<String> preferences) { }

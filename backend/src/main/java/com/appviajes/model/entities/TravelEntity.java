@@ -31,6 +31,10 @@ public class TravelEntity {
 
   private LocalDateTime creationDate;
 
+  private LocalDateTime startDate;
+
+  private LocalDateTime endDate;
+
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "travel_id", referencedColumnName = "id")
   private List<TravelStepEntity> steps;
