@@ -1,6 +1,5 @@
 package com.appviajes.exception;
 
-import com.appviajes.model.dtos.RestErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

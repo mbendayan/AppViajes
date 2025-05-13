@@ -9,4 +9,6 @@ public interface TravelJpaRepository extends JpaRepository<TravelEntity, Long> {
 
   @EntityGraph(attributePaths = "steps")
   Optional<TravelEntity> findWithStepsById(Long id);
+
+  Optional<TravelEntity> findByName(String name);
 }
