@@ -69,35 +69,43 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         childAspectRatio: 3,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        children: options.map((option) {
-          final label = option['label'];
-          final icon = option['icon'];
-          final isSelected = multiSelect
-              ? selectedList!.contains(label)
-              : selected == label;
+        children:
+            options.map((option) {
+              final label = option['label'];
+              final icon = option['icon'];
+              final isSelected =
+                  multiSelect
+                      ? selectedList!.contains(label)
+                      : selected == label;
 
-          return GestureDetector(
-            onTap: () => onSelect(label),
-            child: Container(
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.blue.shade100 : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isSelected ? Colors.blue : Colors.transparent,
-                  width: 2,
+              return GestureDetector(
+                onTap: () => onSelect(label),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color:
+                        isSelected
+                            ? Colors.blue.shade100
+                            : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected ? Colors.blue : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(icon, color: Colors.black54),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(label)),
+                    ],
+                  ),
                 ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                children: [
-                  Icon(icon, color: Colors.black54),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(label)),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -115,7 +123,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             children: [
               ExpansionPanelRadio(
                 value: 'budget',
-                headerBuilder: (_, __) => const ListTile(title: Text('Presupuesto')),
+                headerBuilder:
+                    (_, __) => const ListTile(title: Text('Presupuesto')),
                 body: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
@@ -124,31 +133,40 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                       labelText: 'Presupuesto (USD)',
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
               ),
               ExpansionPanelRadio(
                 value: 'accommodation',
-                headerBuilder: (_, __) => const ListTile(title: Text('Tipo de Alojamiento')),
+                headerBuilder:
+                    (_, __) =>
+                        const ListTile(title: Text('Tipo de Alojamiento')),
                 body: _buildGridOptions(
                   options: _accommodationOptions,
                   selected: _selectedAccommodation,
-                  onSelect: (value) => setState(() => _selectedAccommodation = value),
+                  onSelect:
+                      (value) => setState(() => _selectedAccommodation = value),
                 ),
               ),
               ExpansionPanelRadio(
                 value: 'travelType',
-                headerBuilder: (_, __) => const ListTile(title: Text('Tipo de Viaje')),
+                headerBuilder:
+                    (_, __) => const ListTile(title: Text('Tipo de Viaje')),
                 body: _buildGridOptions(
                   options: _travelTypeOptions,
                   selected: _selectedTravelType,
-                  onSelect: (value) => setState(() => _selectedTravelType = value),
+                  onSelect:
+                      (value) => setState(() => _selectedTravelType = value),
                 ),
               ),
               ExpansionPanelRadio(
                 value: 'transport',
-                headerBuilder: (_, __) => const ListTile(title: Text('Medio de Transporte')),
+                headerBuilder:
+                    (_, __) =>
+                        const ListTile(title: Text('Medio de Transporte')),
                 body: _buildGridOptions(
                   options: _transportOptions,
                   selected: '',
@@ -160,7 +178,15 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             ],
             expansionCallback: (index, isExpanded) {
               setState(() {
-                _expandedSection = isExpanded ? null : ['budget', 'accommodation', 'travelType', 'transport'][index];
+                _expandedSection =
+                    isExpanded
+                        ? null
+                        : [
+                          'budget',
+                          'accommodation',
+                          'travelType',
+                          'transport',
+                        ][index];
               });
             },
           ),
@@ -168,7 +194,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           ElevatedButton(
             onPressed: _savePreferences,
             child: const Text('Guardar Preferencias'),
-          )
+          ),
         ],
       ),
     );

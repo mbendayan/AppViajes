@@ -2,18 +2,35 @@ import 'package:app_viajes/models/travelMenuItem.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class GetTravelsScreen extends StatelessWidget {
-  static const name = 'home_screen';
-  final scafoldKey = GlobalKey<ScaffoldState>();
+class GetTravelsScreen extends StatefulWidget {
+  static const name = 'getTravels_screen';
 
-  GetTravelsScreen({super.key});
+  const GetTravelsScreen({super.key});
+
+  @override
+  State<GetTravelsScreen> createState() => _GetTravelsScreenState();
+}
+
+class _GetTravelsScreenState extends State<GetTravelsScreen> {
+  final List<TravelMenuItem> items = List.from(travelMenuItems);
+
+  void _removeItem(TravelMenuItem item) {
+    setState(() {
+      items.remove(item);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scafoldKey,
       appBar: AppBar(title: const Text('Gestión de viajes')),
-      body: const _HomeView(),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = items[index];
+          return _CustomListTile(item: item, onDelete: () => _removeItem(item));
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.push("/nuevoViaje");
@@ -25,27 +42,11 @@ class GetTravelsScreen extends StatelessWidget {
   }
 }
 
-class _HomeView extends StatelessWidget {
-  const _HomeView();
-
-  @override
-  Widget build(BuildContext context) {
-    var items = travelMenuItems;
-
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (BuildContext context, int index) {
-        final item = items[index];
-        return _CustomListTile(item: item);
-      },
-    );
-  }
-}
-
 class _CustomListTile extends StatelessWidget {
   final TravelMenuItem item;
+  final VoidCallback onDelete;
 
-  const _CustomListTile({required this.item});
+  const _CustomListTile({required this.item, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +81,7 @@ class _CustomListTile extends StatelessWidget {
                   label: const Text("Editar"),
                 ),
                 TextButton.icon(
-                  onPressed: () {
-                    // Acción para eliminar
-                  },
+                  onPressed: onDelete,
                   icon: const Icon(Icons.delete, color: Colors.red),
                   label: const Text("Eliminar"),
                 ),
