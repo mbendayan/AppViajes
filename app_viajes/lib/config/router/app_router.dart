@@ -6,7 +6,7 @@ import 'package:app_viajes/home/presentation/screens/register.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app_viajes/home/presentation/screens/home_screen.dart';
+import 'package:app_viajes/home/presentation/screens/login_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -14,7 +14,7 @@ final appRouter = GoRouter(
     GoRoute(
       name: 'login',
       path: '/',
-      builder: (context, state) => HomeScreen(),
+      builder: (context, state) => LoginScreen(),
     ),
     GoRoute(
       name: RegisterScreen.name,
@@ -31,11 +31,11 @@ final appRouter = GoRouter(
       path: '/home',
       builder: (context, state) => GetTravelsScreen(),
     ),
-    GoRoute(
+    /*GoRoute(
       name: 'verViaje',
       path: '/viaje',
       builder: (context, state) => HomeScreen(),
-    ),
+    ),*/
     GoRoute(
       name: 'nuevoViaje',
       path: '/nuevoViaje',
