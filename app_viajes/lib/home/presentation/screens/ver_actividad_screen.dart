@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class VerActividadScreen extends StatelessWidget {
   final Steps activity;
 
-  VerActividadScreen({required this.activity});
+  const VerActividadScreen({required this.activity});
 
   @override
   Widget build(BuildContext context) {

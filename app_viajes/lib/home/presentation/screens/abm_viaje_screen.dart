@@ -1,6 +1,7 @@
 import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/Step3_actividad_screen.dart';
+import 'package:app_viajes/home/presentation/screens/step2_preferences_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -75,8 +76,8 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
             title: const Text("Preferencias del viaje"),
             isActive: _currentStep == 1,
             content: SizedBox(
-              height: 400, // Define un tamaño fijo
-              child: PreferencesScreen(),
+              height: 300, // Define un tamaño fijo
+              child: Step2PreferencesScreen(),
             ),
           ),
           Step(
