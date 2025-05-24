@@ -1,3 +1,4 @@
+import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,14 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.push("/getActivities");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    ActivitiesScreen(place: 'Valle Central'),
+                          ),
+                        );
                       },
                       child: Text('Agregar Actividad'),
                     ),
