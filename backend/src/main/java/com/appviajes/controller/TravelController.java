@@ -6,12 +6,8 @@ import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.service.TravelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/travels")
@@ -21,7 +17,7 @@ public class TravelController {
 
   private final TravelService travelService;
 
-  @PostMapping
+  @PostMapping("/create")
   public ResponseEntity<CreateTravelResponse> createTravel(
       @RequestBody CreateTravelRequest request) {
     TravelEntity entity = travelService.createTravel(request);
