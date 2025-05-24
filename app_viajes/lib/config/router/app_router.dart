@@ -1,12 +1,10 @@
 import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
-import 'package:app_viajes/home/presentation/screens/get_another_travels.dart';
 import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/abm_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_travels_screen.dart';
 import 'package:app_viajes/home/presentation/screens/register.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_viajes/home/presentation/screens/home_screen.dart';
 
@@ -34,14 +32,14 @@ final appRouter = GoRouter(
       builder: (context, state) => GetTravelsScreen(),
     ),
     GoRoute(
+      name: 'verViaje',
+      path: '/viaje',
+      builder: (context, state) => HomeScreen(),
+    ),
+    GoRoute(
       name: 'nuevoViaje',
       path: '/nuevoViaje',
       builder: (context, state) => ABMViajeScreen(),
-    ),
-    GoRoute(
-      name: 'verViajesYaHechos',
-      path: '/verViajesYaHechos',
-      builder: (context, state) => GetAnotherTravelsScreen(),
     ),
     GoRoute(
       name: 'verActividad',
@@ -61,11 +59,9 @@ final appRouter = GoRouter(
           ),
     ),
     GoRoute(
-      path: '/activities/:place',
-      builder: (BuildContext context, GoRouterState state) {
-        final place = state.pathParameters['place'] ?? '';
-        return ActivitiesScreen(place: place);
-      },
+      name: 'getActivities',
+      path: '/getActivities',
+      builder: (context, state) => ActivitiesScreen(),
     ),
   ],
 );
