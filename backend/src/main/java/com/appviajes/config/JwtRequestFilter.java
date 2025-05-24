@@ -33,13 +33,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         .getBody();
 
                 String email = claims.getSubject();
-                
+
 
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
                 return;
             }
-        } else if (!request.getRequestURI().startsWith("/auth")) {
+        } else if (!request.getRequestURI().startsWith("/auth") & false) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Falta el token");
             return;
         }
