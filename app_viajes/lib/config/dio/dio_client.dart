@@ -10,10 +10,17 @@ class DioClient {
     if (_dio != null) return _dio!;
 
     final baseUrl = _getBaseUrl();
+    
 
-    _dio = Dio(BaseOptions(baseUrl: baseUrl));
+    _dio = Dio(BaseOptions(baseUrl: baseUrl, 
+     headers: {
+          'Content-Type': 'application/json', // 👈 importante
+        },
+        ));
 
-    _dio!.interceptors.add(
+    
+
+    /*_dio!.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final prefs = await SharedPreferences.getInstance();
@@ -28,7 +35,9 @@ class DioClient {
           return handler.next(e);
         },
       ),
-    );
+    );*/
+
+    
 
     return _dio!;
   }

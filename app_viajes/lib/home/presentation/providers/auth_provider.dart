@@ -53,7 +53,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
 Future<String> register(String email, String password) async {
   state = const AsyncValue.loading();
   try {
-    final response = await _dio.post('/api/users/register', data: {
+    final response = await _dio.post('/auth/register', data: {
       'email': email,
       'password': password,
     });
