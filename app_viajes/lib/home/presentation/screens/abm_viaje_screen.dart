@@ -1,3 +1,6 @@
+import 'package:app_viajes/config/dio/dio_client.dart';
+import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
+import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
 import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/Step3_actividad_screen.dart';
@@ -7,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ABMViajeScreen extends ConsumerStatefulWidget {
   const ABMViajeScreen({super.key});
+  
 
   @override
   ConsumerState<ABMViajeScreen> createState() => _ABMViajeScreenState();
@@ -14,6 +18,8 @@ class ABMViajeScreen extends ConsumerStatefulWidget {
 
 class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
   int _currentStep = 0;
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +27,25 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
       appBar: AppBar(title: const Text("ABM Viaje")),
       body: Stepper(
         currentStep: _currentStep,
-        onStepContinue: () {
+        onStepContinue: () async {
+          if (_currentStep ==1){
+            final travel = ref.read(travelFormProvider);
+  try {
+    await ref.read(travelProvider.notifier).createTravel(travel);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Viaje creado con éxito")),
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+          }
+          
           if (_currentStep < 2) {
             setState(() {
               _currentStep++;
