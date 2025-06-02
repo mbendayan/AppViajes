@@ -49,7 +49,7 @@ final appRouter = GoRouter(
       builder:
           (context, state) => VerActividadScreen(
             activity: Steps(
-              id: "1",
+              id: 1,
               travelId: "",
               startDate: DateTime.now(),
               endDate: DateTime.now(),

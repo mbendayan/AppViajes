@@ -9,17 +9,41 @@ final travelFormProvider =
 class TravelFormNotifier extends StateNotifier<CreateTravelRequest> {
   TravelFormNotifier()
       : super(CreateTravelRequest(
-          name: 'Viaje a la Patagoni',
-          destination: 'El Calafate',
-          startDate: '2025-06-15T08:00:00',
-          endDate: '2025-06-20T20:00:00',
-          preferences: ["aventura", "naturaleza", "gastronomía"],
+          name: '',
+          destination: '',
+          startDate: '',
+          endDate: '',
+          preferences: [],
         ));
+  
+  void updateForm({
+    required List<String> preferences,
+  }) {
+    state.preferences = preferences;
 
-  void setName(String name) => state = state.copyWith(name: name);
-  void setDestination(String destination) => state = state.copyWith(destination: destination);
-  void setDates(String start, String end) =>
-      state = state.copyWith(startDate: start, endDate: end);
-  void setPreferences(List<String> preferences) =>
-      state = state.copyWith(preferences: preferences);
+  }
+  void updateForm2({
+    String name = "",
+    String destination = "",
+    String startDate = "",
+    String endDate = "",
+    
+  }) {
+    if (name != "") {
+      state.name = name;
+    }
+    if (destination != "") {
+      state.destination = destination;
+    }
+     if (startDate != "") {
+      state.startDate = startDate;
+    }
+     if (endDate != "") {
+      state.endDate = endDate;
+    }
+    
+  }
+
 }
+
+  

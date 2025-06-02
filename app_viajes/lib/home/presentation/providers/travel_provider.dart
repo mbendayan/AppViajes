@@ -1,4 +1,7 @@
+import 'package:app_viajes/home/presentation/providers/step_provider.dart';
+import 'package:app_viajes/models/step.dart';
 import 'package:app_viajes/models/travel_request.dart';
+import 'package:app_viajes/models/travel_response.dart';
 import 'package:app_viajes/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,8 +34,33 @@ class TravelNotifier extends StateNotifier<AsyncValue<User?>> {
       }
     }
   }
-Future<void> createTravel(CreateTravelRequest request) async {
-    final response = await _dio.post("/auth/create", data: request.toJson());
-    print(response);
+Future<void> createTravel(CreateTravelRequest request, WidgetRef ref) async {
+    try {
+      final response = await _dio.post(
+        '/auth/create',
+        data: request.toJson(),
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.data;
+        final created = CreateTravelResponse.fromJson(data);
+
+        // Guardamos las actividades generadas en el provider
+       ref.read(generatedStepsProvider.notifier).state = created.steps;
+
+
+        print(ref.read(generatedStepsProvider));
+      } else {
+        throw Exception("Error al crear viaje: ${response.statusCode}");
+      }
+    } catch (e) {
+      if (e is DioException) {
+        throw Exception("Error de red: ${e.response?.data ?? e.message}");
+      }
+      rethrow;
+    }
   }
 }

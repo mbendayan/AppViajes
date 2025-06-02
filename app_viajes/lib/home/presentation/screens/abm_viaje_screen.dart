@@ -14,10 +14,12 @@ class ABMViajeScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ABMViajeScreen> createState() => _ABMViajeScreenState();
+  
 }
 
 class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
   int _currentStep = 0;
+  bool _preferencesSaved = false;
   
   
 
@@ -28,33 +30,38 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
       body: Stepper(
         currentStep: _currentStep,
         onStepContinue: () async {
-          if (_currentStep ==1){
-            final travel = ref.read(travelFormProvider);
-  try {
-    await ref.read(travelProvider.notifier).createTravel(travel);
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Viaje creado con éxito")),
-      );
-    }
-  } catch (e) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    }
+  if (_currentStep == 0) {
+    setState(() => _currentStep++);
+    return;
   }
-          }
-          
-          if (_currentStep < 2) {
-            setState(() {
-              _currentStep++;
-            });
-          } else {
-            // Aquí podrías manejar la acción del botón Guardar
-          }
-        },
-        onStepCancel: () {
+
+ if (_currentStep == 1) {
+    
+
+    final travel = ref.read(travelFormProvider);
+    try {
+      await ref.read(travelProvider.notifier).createTravel(travel, ref);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Viaje creado con éxito")),
+        );
+        setState(() => _currentStep++);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
+    }
+    return;
+  }
+
+  if (_currentStep < 2) {
+    setState(() => _currentStep++);
+  }
+},
+onStepCancel: () {
           if (_currentStep > 0) {
             setState(() => _currentStep--);
           }
@@ -89,21 +96,33 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
         },
         steps: [
           Step(
-            title: Text("Datos del viaje"),
-            isActive: _currentStep == 0,
-            content: SizedBox(
-              height: 400, // Define un tamaño fijo
-              child: Step1ViajeScreen(),
-            ),
-          ),
-          Step(
+  title: const Text("Datos del viaje"),
+  isActive: _currentStep == 0,
+  content: SizedBox(
+    height: 300,
+    child: Step1ViajeScreen(
+      onSaved: ({required name, required destination, required startDate, required endDate}) {
+        ref.read(travelFormProvider.notifier).updateForm2(
+        name: name,
+        destination: destination,
+        startDate: startDate.toIso8601String(),
+        endDate: endDate.toIso8601String(),
+        );
+      },
+    ),
+  ),
+),
+Step(
             title: const Text("Preferencias del viaje"),
             isActive: _currentStep == 1,
-            content: SizedBox(
-              height: 300, // Define un tamaño fijo
-              child: Step2PreferencesScreen(),
+            content: Step2PreferencesScreen(
+              onSaved: () {
+                // En este caso no se necesita lógica adicional aquí,
+                // porque Step2PreferencesScreen ya guarda usando Riverpod.
+              },
             ),
           ),
+
           Step(
             title: const Text("Actividades del viaje"),
             isActive: _currentStep == 2,

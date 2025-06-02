@@ -1,12 +1,11 @@
- import 'package:flutter/material.dart';
 
 class CreateTravelRequest{
-    final String name;
-    final String destination;
-    final String startDate ;
-    final String endDate;
+     String name;
+    String destination;
+     String startDate ;
+    String endDate;
    
-    final List<String> preferences;
+     List<String> preferences;
  
 
  CreateTravelRequest(
