@@ -1,12 +1,13 @@
-import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
-import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/Step3_actividad_screen.dart';
+import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step2_preferences_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ABMViajeScreen extends ConsumerStatefulWidget {
-  const ABMViajeScreen({super.key});
+  final bool isViewMode; // Nuevo parámetro para el modo visualizar
+
+  const ABMViajeScreen({super.key, this.isViewMode = false});
 
   @override
   ConsumerState<ABMViajeScreen> createState() => _ABMViajeScreenState();
@@ -65,11 +66,13 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
         },
         steps: [
           Step(
-            title: Text("Datos del viaje"),
+            title: const Text("Datos del viaje"),
             isActive: _currentStep == 0,
             content: SizedBox(
               height: 400, // Define un tamaño fijo
-              child: Step1ViajeScreen(),
+              child: Step1ViajeScreen(
+                isViewMode: widget.isViewMode,
+              ), // Pasar el modo
             ),
           ),
           Step(
@@ -77,7 +80,9 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
             isActive: _currentStep == 1,
             content: SizedBox(
               height: 300, // Define un tamaño fijo
-              child: Step2PreferencesScreen(),
+              child: Step2PreferencesScreen(
+                isViewMode: widget.isViewMode,
+              ), // Pasar el modo
             ),
           ),
           Step(
@@ -85,7 +90,9 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
             isActive: _currentStep == 2,
             content: SizedBox(
               height: 400, // Define un tamaño fijo
-              child: Step3ActividadScreen(),
+              child: Step3ActividadScreen(
+                isViewMode: widget.isViewMode,
+              ), // Pasar el modo
             ),
           ),
         ],

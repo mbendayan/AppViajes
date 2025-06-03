@@ -2,14 +2,12 @@ import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-/*final stepperProvider = StateNotifierProvider<StepperProvider, bool>(
-  (ref) => StepperProvider(),
-);*/
 class Step3ActividadScreen extends StatefulWidget {
-  const Step3ActividadScreen({super.key});
+  final bool isViewMode; // Nuevo parámetro para modo visualizar
+
+  const Step3ActividadScreen({super.key, this.isViewMode = false});
 
   @override
   State<Step3ActividadScreen> createState() => Step3ActividadState();
@@ -34,9 +32,9 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
       startDate: DateTime.parse('2025-05-21'),
       endDate: DateTime.parse('2025-05-21'),
       location: '40.7128,-74.0060',
-      name: 'Visita al museo',
-      cost: 15.00,
-      recommendations: 'Visitar primero la sección de arte moderno.',
+      name: 'Tour por el centro histórico',
+      cost: 20.00,
+      recommendations: 'Llevar calzado cómodo.',
     ),
   ];
 
@@ -48,17 +46,19 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
   }
 
   void _selectDate() async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2025),
-      lastDate: DateTime(2030),
-    );
+    if (!widget.isViewMode) {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2025),
+        lastDate: DateTime(2030),
+      );
 
-    if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
-        selectedDate = pickedDate;
-      });
+      if (pickedDate != null && pickedDate != selectedDate) {
+        setState(() {
+          selectedDate = pickedDate;
+        });
+      }
     }
   }
 
@@ -77,21 +77,25 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: _selectDate,
-                      child: Text('Filtrar por Fecha'),
+                      onPressed: widget.isViewMode ? null : _selectDate,
+                      child: const Text('Filtrar por Fecha'),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    ActivitiesScreen(place: 'Valle Central'),
-                          ),
-                        );
-                      },
-                      child: Text('Agregar Actividad'),
+                      onPressed:
+                          widget.isViewMode
+                              ? null
+                              : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => const ActivitiesScreen(
+                                          place: 'Valle Central',
+                                        ),
+                                  ),
+                                );
+                              },
+                      child: const Text('Agregar Actividad'),
                     ),
                   ],
                 ),
@@ -100,7 +104,7 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       'Fecha seleccionada: ${DateFormat('dd/MM/yyyy').format(selectedDate!)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -132,7 +136,7 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                       ],
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.remove_red_eye),
+                      icon: const Icon(Icons.remove_red_eye),
                       onPressed: () {
                         Navigator.push(
                           context,

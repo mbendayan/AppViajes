@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Step2PreferencesScreen extends StatefulWidget {
-  const Step2PreferencesScreen({super.key});
+  final bool isViewMode; // Nuevo parámetro para modo visualizar
+
+  const Step2PreferencesScreen({super.key, this.isViewMode = false});
+
   static const name = 'preferences';
 
   @override
@@ -14,7 +17,6 @@ class _Step2PreferencesScreenState extends State<Step2PreferencesScreen> {
   String? _selectedTravelType;
   List<String> _selectedTransports = [];
 
-  // Identificador del panel expandido actualmente
   String? _expandedSection;
 
   final List<Map<String, dynamic>> _accommodationOptions = [
@@ -39,18 +41,13 @@ class _Step2PreferencesScreenState extends State<Step2PreferencesScreen> {
   ];
 
   void _toggleTransport(String transport) {
-    setState(() {
-      _selectedTransports.contains(transport)
-          ? _selectedTransports.remove(transport)
-          : _selectedTransports.add(transport);
-    });
-  }
-
-  void _savePreferences() {
-    print('Budget: ${_budgetController.text}');
-    print('Accommodation: $_selectedAccommodation');
-    print('Travel Type: $_selectedTravelType');
-    print('Transport Types: $_selectedTransports');
+    if (!widget.isViewMode) {
+      setState(() {
+        _selectedTransports.contains(transport)
+            ? _selectedTransports.remove(transport)
+            : _selectedTransports.add(transport);
+      });
+    }
   }
 
   Widget _buildGridOptions({
@@ -79,7 +76,7 @@ class _Step2PreferencesScreenState extends State<Step2PreferencesScreen> {
                       : selected == label;
 
               return GestureDetector(
-                onTap: () => onSelect(label),
+                onTap: widget.isViewMode ? null : () => onSelect(label),
                 child: Container(
                   decoration: BoxDecoration(
                     color:
@@ -140,6 +137,9 @@ class _Step2PreferencesScreenState extends State<Step2PreferencesScreen> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    enabled:
+                        !widget
+                            .isViewMode, // Deshabilitar si es modo visualizar
                   ),
                 ),
               ),
@@ -181,17 +181,19 @@ class _Step2PreferencesScreenState extends State<Step2PreferencesScreen> {
               ),
             ],
             expansionCallback: (index, isExpanded) {
-              setState(() {
-                _expandedSection =
-                    isExpanded
-                        ? null
-                        : [
-                          'budget',
-                          'accommodation',
-                          'travelType',
-                          'transport',
-                        ][index];
-              });
+              if (!widget.isViewMode) {
+                setState(() {
+                  _expandedSection =
+                      isExpanded
+                          ? null
+                          : [
+                            'budget',
+                            'accommodation',
+                            'travelType',
+                            'transport',
+                          ][index];
+                });
+              }
             },
           ),
         ],
