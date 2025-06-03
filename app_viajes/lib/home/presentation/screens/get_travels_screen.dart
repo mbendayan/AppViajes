@@ -118,7 +118,7 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
                 context.push("/traductor");
               },
               tooltip: "Ver palabras clave",
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.translate),
             ),
           ),
           Positioned(

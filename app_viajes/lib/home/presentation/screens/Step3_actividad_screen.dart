@@ -77,7 +77,7 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: widget.isViewMode ? null : _selectDate,
+                      onPressed: _selectDate,
                       child: const Text('Filtrar por Fecha'),
                     ),
                     ElevatedButton(
