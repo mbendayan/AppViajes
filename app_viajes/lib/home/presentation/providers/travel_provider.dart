@@ -37,7 +37,7 @@ class TravelNotifier extends StateNotifier<AsyncValue<User?>> {
 Future<void> createTravel(CreateTravelRequest request, WidgetRef ref) async {
     try {
       final response = await _dio.post(
-        '/auth/create',
+        '/travels/create',
         data: request.toJson(),
         options: Options(headers: {
           'Content-Type': 'application/json',

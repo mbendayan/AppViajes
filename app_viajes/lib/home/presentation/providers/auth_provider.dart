@@ -32,15 +32,16 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   Future<String> login(String email, String password) async {
   state = const AsyncValue.loading();
   try {
-    final response = await _dio.post('/auth/login', data: {
+    final response = await _dio.post('/api/users/login', data: {
       'email': email,
       'password': password,
     });
 
-    final token = response.data['token'];
-    final user = User.fromJson(response.data['user']);
+    
+    final user = User.fromJson(response.data);
 
-    await _saveToken(token);
+
+    
 
     state = AsyncValue.data(user);
     return 'success';
@@ -53,7 +54,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
 Future<String> register(String email, String password) async {
   state = const AsyncValue.loading();
   try {
-    final response = await _dio.post('/auth/register', data: {
+    final response = await _dio.post('/api/users/register', data: {
       'email': email,
       'password': password,
     });

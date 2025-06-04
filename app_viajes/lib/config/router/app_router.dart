@@ -1,5 +1,6 @@
 import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_another_travels_screen.dart';
+import 'package:app_viajes/home/presentation/screens/login_screen.dart';
 import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/abm_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_travels_screen.dart';
@@ -9,7 +10,7 @@ import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app_viajes/home/presentation/screens/home_screen.dart';
+
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -17,7 +18,7 @@ final appRouter = GoRouter(
     GoRoute(
       name: 'login',
       path: '/',
-      builder: (context, state) => HomeScreen(),
+      builder: (context, state) => LoginScreen(),
     ),
     GoRoute(
       name: RegisterScreen.name,

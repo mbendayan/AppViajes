@@ -1,5 +1,6 @@
 package com.appviajes.model.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -26,6 +27,6 @@ public class UserEntity {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "travel_id") 
     )
-    private List<TravelEntity> travels;
+    private List<TravelEntity> travels = new ArrayList<>();
 
 }

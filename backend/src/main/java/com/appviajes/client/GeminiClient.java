@@ -3,6 +3,7 @@ package com.appviajes.client;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.parse;
 
+
 import com.appviajes.client.apis.GeminiApi;
 import com.appviajes.model.dtos.GeminiPromptRequest;
 import com.appviajes.model.dtos.PreferenciasRequest;
