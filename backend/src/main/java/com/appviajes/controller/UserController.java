@@ -5,6 +5,7 @@ import com.appviajes.model.dtos.LoginRequest;
 import com.appviajes.model.dtos.PreferenciasRequest;
 import com.appviajes.model.dtos.RegisterRequest;
 import com.appviajes.model.dtos.RespondInviteRequest;
+import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelInvitationEntity;
 import com.appviajes.model.entities.UserEntity;
 import com.appviajes.repository.UserRepository;
@@ -71,6 +72,17 @@ public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error de autenticación");
     }
 }
+
+@GetMapping("/{userId}/travels")
+public ResponseEntity<?> getUserTravels(@PathVariable Long userId) {
+    try {
+        List<TravelEntity> travels = userService.getTravels(userId);
+        return ResponseEntity.ok(travels);
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+}
+
 
     @GetMapping("/{userId}/preferences")
     public ResponseEntity<?> getUserPreferences(@PathVariable Long userId) {
