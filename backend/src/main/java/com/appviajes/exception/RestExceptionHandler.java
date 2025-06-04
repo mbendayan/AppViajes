@@ -7,13 +7,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<Void> handleRuntimeException(RuntimeException ex) {
-    return ResponseEntity.internalServerError().build();
+  @ExceptionHandler(RuntimeException.class)
+  public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+    ex.printStackTrace(); // Muestra el stacktrace en consola
+    return ResponseEntity.internalServerError().body("Error interno: " + ex.getMessage());
   }
 
   @ExceptionHandler(RestException.class)
-  public ResponseEntity<Void> handleRuntimeException(RestException ex) {
-    return ResponseEntity.status(ex.getErrorEnum().getStatus()).build();
+  public ResponseEntity<String> handleRestException(RestException ex) {
+    ex.printStackTrace();
+    return ResponseEntity
+        .status(ex.getErrorEnum().getStatus())
+        .body("Error: " + ex.getMessage());
   }
 }

@@ -5,6 +5,8 @@ import static java.time.LocalDateTime.parse;
 
 import com.appviajes.client.apis.GeminiApi;
 import com.appviajes.model.dtos.GeminiPromptRequest;
+import com.appviajes.model.dtos.PreferenciasRequest;
+import com.appviajes.model.entities.Preferences;
 import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelStepEntity;
 import java.util.LinkedList;
@@ -76,7 +78,8 @@ public class GeminiClient implements AIClient {
         .replace("{destination}", request.getDestination())
         .replace("{startDate}", request.getStartDate().toString())
         .replace("{endDate}", request.getEndDate().toString())
-        .replace("{preferences}", join(", ", request.getPreferences()));
+        .replace("{preferences}", buildPreferencesText(request.getPreferences()));
+
     log.info("Prompt built [{}]", prompt);
     return prompt;
   }
@@ -86,4 +89,18 @@ public class GeminiClient implements AIClient {
         .replace("```", "")
         .replaceFirst("json", "");
   }
+
+private String buildPreferencesText(Preferences prefs) {
+  return String.format(
+      "presupuesto: %s, monto personalizado: %.2f, tipo viaje: %s, alojamiento: %s, transporte: %s",
+      prefs.getPresupuesto() != null ? prefs.getPresupuesto().name() : "Sin especificar",
+      prefs.getMontoPersonalizado() != null ? prefs.getMontoPersonalizado() : 0.0,
+      prefs.getTipoViaje() != null ? prefs.getTipoViaje().name() : "Sin especificar",
+      prefs.getTipoAlojamiento() != null ? prefs.getTipoAlojamiento().name() : "Sin especificar",
+      prefs.getTipoTransporte() != null ? prefs.getTipoTransporte().name() : "Sin especificar"
+  );
+}
+
+
+
 }
