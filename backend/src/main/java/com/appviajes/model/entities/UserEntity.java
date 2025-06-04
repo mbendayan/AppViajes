@@ -1,5 +1,7 @@
 package com.appviajes.model.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,4 +17,15 @@ public class UserEntity {
     private Long id;
     private String email;
     private String password;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "preferencias_id", referencedColumnName = "id")
+    private Preferences preferencias;
+    @ManyToMany
+    @JoinTable(
+        name = "user_saved_travels",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "travel_id") 
+    )
+    private List<TravelEntity> travels;
+
 }

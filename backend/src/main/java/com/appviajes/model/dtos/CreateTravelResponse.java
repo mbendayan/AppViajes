@@ -11,7 +11,7 @@ import java.util.List;
 public record CreateTravelResponse(
     Long id,
     String name,
-    String preferences,
+    PreferenciasResponse preferences,
     String destination,
     List<CreateTravelStepResponse> steps
 ) {
@@ -20,7 +20,7 @@ public record CreateTravelResponse(
     this(
         entity.getId(),
         entity.getName(),
-        entity.getPreferences(),
+        new PreferenciasResponse(entity.getPreferences()),
         entity.getDestination(),
         entity.getSteps().stream().map(stepEntity ->
             new CreateTravelStepResponse(

@@ -6,7 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +27,9 @@ public class TravelEntity {
 
   private String name;
 
-  private String preferences;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "preferences_id", referencedColumnName = "id")
+  private Preferences preferences;
 
   private String destination;
 
@@ -38,4 +42,8 @@ public class TravelEntity {
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "travel_id", referencedColumnName = "id")
   private List<TravelStepEntity> steps;
+
+  @ManyToMany(mappedBy = "travels")
+  private List<UserEntity> savedByUsers;
+
 }
