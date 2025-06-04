@@ -4,13 +4,15 @@ import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
 import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/Step3_actividad_screen.dart';
+import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step2_preferences_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ABMViajeScreen extends ConsumerStatefulWidget {
-  const ABMViajeScreen({super.key});
-  
+  final bool isViewMode; // Nuevo parámetro para el modo visualizar
+
+  const ABMViajeScreen({super.key, this.isViewMode = false});
 
   @override
   ConsumerState<ABMViajeScreen> createState() => _ABMViajeScreenState();
@@ -109,6 +111,7 @@ onStepCancel: () {
         endDate: endDate.toIso8601String(),
         );
       },
+      isViewMode: widget.isViewMode,
     ),
   ),
 ),
@@ -120,6 +123,7 @@ Step(
                 // En este caso no se necesita lógica adicional aquí,
                 // porque Step2PreferencesScreen ya guarda usando Riverpod.
               },
+              isViewMode: widget.isViewMode,
             ),
           ),
 
@@ -128,7 +132,9 @@ Step(
             isActive: _currentStep == 2,
             content: SizedBox(
               height: 400, // Define un tamaño fijo
-              child: Step3ActividadScreen(),
+              child: Step3ActividadScreen(
+                isViewMode: widget.isViewMode,
+              ), // Pasar el modo
             ),
           ),
         ],

@@ -111,6 +111,17 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
             ),
           ),
           Positioned(
+            bottom: 202,
+            right: 16,
+            child: FloatingActionButton(
+              onPressed: () {
+                context.push("/traductor");
+              },
+              tooltip: "Ver palabras clave",
+              child: const Icon(Icons.translate),
+            ),
+          ),
+          Positioned(
             bottom: 144,
             right: 16,
             child: FloatingActionButton(

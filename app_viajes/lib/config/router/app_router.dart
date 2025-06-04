@@ -4,6 +4,7 @@ import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/abm_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_travels_screen.dart';
 import 'package:app_viajes/home/presentation/screens/register.dart';
+import 'package:app_viajes/home/presentation/screens/traductor_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,17 @@ final appRouter = GoRouter(
       builder: (context, state) => GetTravelsScreen(),
     ),
     GoRoute(
-      name: 'nuevoViaje',
       path: '/nuevoViaje',
-      builder: (context, state) => ABMViajeScreen(),
+      builder: (context, state) {
+        final isViewMode =
+            state.extra != null && (state.extra as Map)['isViewMode'] == true;
+        return ABMViajeScreen(isViewMode: isViewMode);
+      },
+    ),
+    GoRoute(
+      name: 'traductor',
+      path: '/traductor',
+      builder: (context, state) => TranslationScreen(),
     ),
     GoRoute(
       name: 'verViajesYaHechos',

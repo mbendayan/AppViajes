@@ -13,8 +13,10 @@ class Step1ViajeScreen extends ConsumerStatefulWidget {
     required DateTime startDate,
     required DateTime endDate,
   }) onSaved;
+  final bool isViewMode; // Nuevo parámetro para determinar el modo
 
-  const Step1ViajeScreen({super.key, required this.onSaved});
+  const Step1ViajeScreen({super.key, this.isViewMode = false, required this.onSaved});
+
 
   @override
   ConsumerState<Step1ViajeScreen> createState() => _Step1ViajeState();
@@ -28,6 +30,7 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
   DateTime? _fechaFin;
 
   Future<void> _selectFecha(BuildContext context, bool esInicio) async {
+     if (widget.isViewMode) return;
     final picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -62,54 +65,80 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _tituloController,
-              decoration: const InputDecoration(labelText: "Título"),
-              onChanged: (value) {
+    return Scaffold(
+      body: Form(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _tituloController,
+                decoration: const InputDecoration(labelText: "Título"),
+                 onChanged: (value) {
                   ref.read(travelFormProvider.notifier).updateForm2(name: value);
-                }),
-            TextFormField(
-              controller: _destinoController,
-              decoration: const InputDecoration(labelText: "Destino"),onChanged: (value) {
+                },
+                readOnly:
+                    widget
+                        .isViewMode, // Campo de solo lectura si está en modo visualizar
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? "Campo requerido"
+                            : null,
+              ),
+              TextFormField(
+                controller: _destinoController,
+                decoration: const InputDecoration(labelText: "Destino"),
+                 onChanged: (value) {
                   ref.read(travelFormProvider.notifier).updateForm2(destination: value);
-                }),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.calendar_today),
-                const SizedBox(width: 10),
-                const Text("Fecha de Inicio: "),
-                TextButton(
-                  onPressed: () => _selectFecha(context, true),
-                  child: Text(
-                    _fechaInicio == null
-                        ? "Seleccionar"
-                        : "${_fechaInicio!.day}/${_fechaInicio!.month}/${_fechaInicio!.year}",
+                },
+                readOnly: widget.isViewMode,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? "Campo requerido"
+                            : null,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today),
+                  const SizedBox(width: 10),
+                  const Text("Fecha de Inicio: "),
+                  TextButton(
+                    onPressed:
+                        widget.isViewMode
+                            ? null // Botón deshabilitado si está en modo visualizar
+                            : () => _selectFecha(context, true),
+                    child: Text(
+                      _fechaInicio == null
+                          ? "Seleccionar"
+                          : "${_fechaInicio!.day}/${_fechaInicio!.month}/${_fechaInicio!.year}",
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Icon(Icons.calendar_today),
-                const SizedBox(width: 10),
-                const Text("Fecha de Fin: "),
-                TextButton(
-                  onPressed: () => _selectFecha(context, false),
-                  child: Text(
-                    _fechaFin == null
-                        ? "Seleccionar"
-                        : "${_fechaFin!.day}/${_fechaFin!.month}/${_fechaFin!.year}",
+                ],
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today),
+                  const SizedBox(width: 10),
+                  const Text("Fecha de Fin: "),
+                  TextButton(
+                    onPressed:
+                        widget.isViewMode
+                            ? null
+                            : () => _selectFecha(context, false),
+                    child: Text(
+                      _fechaFin == null
+                          ? "Seleccionar"
+                          : "${_fechaFin!.day}/${_fechaFin!.month}/${_fechaFin!.year}",
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

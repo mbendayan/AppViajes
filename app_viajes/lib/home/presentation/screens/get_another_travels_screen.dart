@@ -32,7 +32,8 @@ class _GetAnotherTravelsScreenState extends State<GetAnotherTravelsScreen> {
           return _CustomListTile(
             item: item,
             onDelete: () => _removeItem(item),
-            onEdit: () => context.push("/nuevoViaje"),
+            onEdit:
+                () => context.push("/nuevoViaje", extra: {'isViewMode': true}),
           );
         },
       ),

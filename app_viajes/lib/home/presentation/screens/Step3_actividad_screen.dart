@@ -11,7 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class Step3ActividadScreen extends ConsumerStatefulWidget {
-  const Step3ActividadScreen({super.key});
+  final bool isViewMode; // Nuevo parámetro para modo visualizar
+
+  const Step3ActividadScreen({super.key, this.isViewMode = false});
 
   @override
   ConsumerState<Step3ActividadScreen> createState() => _Step3ActividadState();
@@ -32,17 +34,19 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
   }
 
   void _selectDate() async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2025),
-      lastDate: DateTime(2030),
-    );
+    if (!widget.isViewMode) {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2025),
+        lastDate: DateTime(2030),
+      );
 
-    if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
-        selectedDate = pickedDate;
-      });
+      if (pickedDate != null && pickedDate != selectedDate) {
+        setState(() {
+          selectedDate = pickedDate;
+        });
+      }
     }
   }
 
@@ -73,14 +77,20 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
                       child: const Text('Filtrar por Fecha'),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ActivitiesScreen(place: 'Valle Central'),
-                          ),
-                        );
-                      },
+                      onPressed:
+                          widget.isViewMode
+                              ? null
+                              : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => const ActivitiesScreen(
+                                          place: 'Valle Central',
+                                        ),
+                                  ),
+                                );
+                              },
                       child: const Text('Agregar Actividad'),
                     ),
                   ],

@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class Step2PreferencesScreen extends ConsumerStatefulWidget {
 
   final VoidCallback? onSaved;
-  const Step2PreferencesScreen({super.key, this.onSaved});
+  final bool isViewMode; // Nuevo parámetro para modo visualizar
+
+  const Step2PreferencesScreen({super.key,this.isViewMode = false, this.onSaved});
 
   @override
   ConsumerState<Step2PreferencesScreen> createState() =>
@@ -42,7 +44,8 @@ class _Step2PreferencesScreenState
   ];
 
   void _toggleTransport(String transport) {
-    setState(() {
+    if (!widget.isViewMode){
+      setState(() {
       if (_selectedTransports.contains(transport)) {
         _selectedTransports.remove(transport);
       } else {
@@ -51,6 +54,8 @@ class _Step2PreferencesScreenState
     });
     _savePreferencesToProvider();
   }
+    }
+    
 
   void _savePreferencesToProvider() {
     final budgetText = _budgetController.text.trim();
@@ -91,7 +96,7 @@ class _Step2PreferencesScreenState
               : selected == label;
 
           return GestureDetector(
-            onTap: () {
+             onTap: widget.isViewMode ? null : () {
               onSelect(label);
               _savePreferencesToProvider();
             },
@@ -149,6 +154,9 @@ class _Step2PreferencesScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  enabled:
+                        !widget
+                            .isViewMode, // Deshabilitar si es modo visualizar
                   onChanged: (_) => _savePreferencesToProvider(),
                 ),
               ),
@@ -191,12 +199,15 @@ class _Step2PreferencesScreenState
             ),
           ],
           expansionCallback: (index, isExpanded) {
-            setState(() {
+            if (!widget.isViewMode){
+              setState(() {
               _expandedSection = isExpanded
                   ? null
                   : ['budget', 'accommodation', 'travelType', 'transport']
                       [index];
             });
+            }
+            
           },
         ),
       ],
