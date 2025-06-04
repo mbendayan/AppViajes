@@ -97,6 +97,7 @@ public class UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return user.getTravels();
+        
     }
 
     private PreferenciasRequest mapPreferencesToDTO(Preferences preferences) {
