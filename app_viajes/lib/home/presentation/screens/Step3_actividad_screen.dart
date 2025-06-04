@@ -1,48 +1,36 @@
+
+/*final stepperProvider = StateNotifierProvider<StepperProvider, bool>(
+  (ref) => StepperProvider(),
+);*/
+import 'package:app_viajes/home/presentation/providers/step_provider.dart';
 import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class Step3ActividadScreen extends StatefulWidget {
+class Step3ActividadScreen extends ConsumerStatefulWidget {
   final bool isViewMode; // Nuevo parámetro para modo visualizar
 
   const Step3ActividadScreen({super.key, this.isViewMode = false});
 
   @override
-  State<Step3ActividadScreen> createState() => Step3ActividadState();
+  ConsumerState<Step3ActividadScreen> createState() => _Step3ActividadState();
 }
 
-class Step3ActividadState extends State<Step3ActividadScreen> {
+class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
   DateTime? selectedDate;
-  List<Steps> activities = [
-    Steps(
-      id: '1',
-      travelId: 't1',
-      startDate: DateTime.parse('2025-05-20'),
-      endDate: DateTime.parse('2025-05-20'),
-      location: '40.7128,-74.0060',
-      name: 'Visita al museo',
-      cost: 15.00,
-      recommendations: 'Visitar primero la sección de arte moderno.',
-    ),
-    Steps(
-      id: '2',
-      travelId: 't2',
-      startDate: DateTime.parse('2025-05-21'),
-      endDate: DateTime.parse('2025-05-21'),
-      location: '40.7128,-74.0060',
-      name: 'Tour por el centro histórico',
-      cost: 20.00,
-      recommendations: 'Llevar calzado cómodo.',
-    ),
-  ];
 
-  List<Steps> getFilteredActivities() {
+  List<Steps> getFilteredActivities(List<Steps> activities) {
     if (selectedDate == null) return activities;
     return activities
-        .where((activity) => activity.startDate == selectedDate)
+        .where((activity) => isSameDay(activity.startDate, selectedDate!))
         .toList();
+  }
+
+  bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   void _selectDate() async {
@@ -63,9 +51,17 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final filteredActivities = getFilteredActivities();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final List<Steps> activities = ref.read(generatedStepsProvider);
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    final List<Steps> activities = ref.read(generatedStepsProvider);
+    final filteredActivities = getFilteredActivities(activities);
+    print(activities);
     return Scaffold(
       body: Column(
         children: [
@@ -125,12 +121,8 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}',
-                        ),
-                        Text(
-                          'Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}',
-                        ),
+                        Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
+                        Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
                         Text('Costo: ${activity.cost.toStringAsFixed(2)} €'),
                         Text('Recomendaciones: ${activity.recommendations}'),
                       ],
@@ -141,9 +133,7 @@ class Step3ActividadState extends State<Step3ActividadScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    VerActividadScreen(activity: activity),
+                            builder: (context) => VerActividadScreen(activity: activity),
                           ),
                         );
                       },

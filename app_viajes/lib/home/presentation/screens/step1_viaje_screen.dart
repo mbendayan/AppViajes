@@ -1,33 +1,37 @@
+import 'package:app_viajes/home/presentation/providers/stepper_provider.dart';
+import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Step1ViajeScreen extends StatefulWidget {
+/*final stepperProvider = StateNotifierProvider<StepperProvider, bool>(
+  (ref) => StepperProvider(),
+);*/
+class Step1ViajeScreen extends ConsumerStatefulWidget {
+  final void Function({
+    required String name,
+    required String destination,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) onSaved;
   final bool isViewMode; // Nuevo parámetro para determinar el modo
 
-  const Step1ViajeScreen({super.key, this.isViewMode = false});
+  const Step1ViajeScreen({super.key, this.isViewMode = false, required this.onSaved});
+
 
   @override
-  State<Step1ViajeScreen> createState() => Step1ViajeState();
+  ConsumerState<Step1ViajeScreen> createState() => _Step1ViajeState();
 }
 
-class Step1ViajeState extends State<Step1ViajeScreen> {
+
+class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
   final _destinoController = TextEditingController();
   final _tituloController = TextEditingController();
-  final _costoController = TextEditingController();
-  final _descripcionController = TextEditingController();
   DateTime? _fechaInicio;
   DateTime? _fechaFin;
 
-  int get _duracion {
-    if (_fechaInicio != null && _fechaFin != null) {
-      return _fechaFin!.difference(_fechaInicio!).inDays;
-    }
-    return 0;
-  }
-
   Future<void> _selectFecha(BuildContext context, bool esInicio) async {
-    if (widget.isViewMode) return; // Evita la interacción en modo visualizar
-
-    final DateTime? picked = await showDatePicker(
+     if (widget.isViewMode) return;
+    final picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
@@ -37,12 +41,27 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
       setState(() {
         if (esInicio) {
           _fechaInicio = picked;
+                  ref.read(travelFormProvider.notifier).updateForm2(startDate: picked.toIso8601String());
         } else {
           _fechaFin = picked;
+          ref.read(travelFormProvider.notifier).updateForm2(endDate: picked.toIso8601String());
         }
       });
     }
   }
+
+  void _saveStep1Provider() {
+  if (_fechaInicio == null || _fechaFin == null) return;
+
+  ref.read(travelFormProvider.notifier).updateForm2(
+    name: _tituloController.text,
+    destination: _destinoController.text,
+    startDate: _fechaInicio!.toIso8601String(),
+    endDate: _fechaFin!.toIso8601String(),
+    
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +75,9 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
               TextFormField(
                 controller: _tituloController,
                 decoration: const InputDecoration(labelText: "Título"),
+                 onChanged: (value) {
+                  ref.read(travelFormProvider.notifier).updateForm2(name: value);
+                },
                 readOnly:
                     widget
                         .isViewMode, // Campo de solo lectura si está en modo visualizar
@@ -68,6 +90,9 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
               TextFormField(
                 controller: _destinoController,
                 decoration: const InputDecoration(labelText: "Destino"),
+                 onChanged: (value) {
+                  ref.read(travelFormProvider.notifier).updateForm2(destination: value);
+                },
                 readOnly: widget.isViewMode,
                 validator:
                     (value) =>
@@ -111,32 +136,6 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.timer),
-                  const SizedBox(width: 10),
-                  Text("Duración: $_duracion días"),
-                ],
-              ),
-              TextFormField(
-                controller: _costoController,
-                decoration: const InputDecoration(labelText: "Costo Total (€)"),
-                keyboardType: TextInputType.number,
-                readOnly: widget.isViewMode,
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty
-                            ? "Campo requerido"
-                            : null,
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(labelText: "Descripción"),
-                maxLines: 3,
-                readOnly: widget.isViewMode,
               ),
             ],
           ),

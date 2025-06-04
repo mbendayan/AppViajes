@@ -1,3 +1,8 @@
+import 'package:app_viajes/config/dio/dio_client.dart';
+import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
+import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
+import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
+import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/Step3_actividad_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step2_preferences_screen.dart';
@@ -11,10 +16,14 @@ class ABMViajeScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ABMViajeScreen> createState() => _ABMViajeScreenState();
+  
 }
 
 class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
   int _currentStep = 0;
+  bool _preferencesSaved = false;
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +31,39 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
       appBar: AppBar(title: const Text("ABM Viaje")),
       body: Stepper(
         currentStep: _currentStep,
-        onStepContinue: () {
-          if (_currentStep < 2) {
-            setState(() {
-              _currentStep++;
-            });
-          } else {
-            // Aquí podrías manejar la acción del botón Guardar
-          }
-        },
-        onStepCancel: () {
+        onStepContinue: () async {
+  if (_currentStep == 0) {
+    setState(() => _currentStep++);
+    return;
+  }
+
+ if (_currentStep == 1) {
+    
+
+    final travel = ref.read(travelFormProvider);
+    try {
+      await ref.read(travelProvider.notifier).createTravel(travel, ref);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Viaje creado con éxito")),
+        );
+        setState(() => _currentStep++);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
+    }
+    return;
+  }
+
+  if (_currentStep < 2) {
+    setState(() => _currentStep++);
+  }
+},
+onStepCancel: () {
           if (_currentStep > 0) {
             setState(() => _currentStep--);
           }
@@ -66,25 +98,35 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
         },
         steps: [
           Step(
-            title: const Text("Datos del viaje"),
-            isActive: _currentStep == 0,
-            content: SizedBox(
-              height: 400, // Define un tamaño fijo
-              child: Step1ViajeScreen(
-                isViewMode: widget.isViewMode,
-              ), // Pasar el modo
-            ),
-          ),
-          Step(
+  title: const Text("Datos del viaje"),
+  isActive: _currentStep == 0,
+  content: SizedBox(
+    height: 300,
+    child: Step1ViajeScreen(
+      onSaved: ({required name, required destination, required startDate, required endDate}) {
+        ref.read(travelFormProvider.notifier).updateForm2(
+        name: name,
+        destination: destination,
+        startDate: startDate.toIso8601String(),
+        endDate: endDate.toIso8601String(),
+        );
+      },
+      isViewMode: widget.isViewMode,
+    ),
+  ),
+),
+Step(
             title: const Text("Preferencias del viaje"),
             isActive: _currentStep == 1,
-            content: SizedBox(
-              height: 300, // Define un tamaño fijo
-              child: Step2PreferencesScreen(
-                isViewMode: widget.isViewMode,
-              ), // Pasar el modo
+            content: Step2PreferencesScreen(
+              onSaved: () {
+                // En este caso no se necesita lógica adicional aquí,
+                // porque Step2PreferencesScreen ya guarda usando Riverpod.
+              },
+              isViewMode: widget.isViewMode,
             ),
           ),
+
           Step(
             title: const Text("Actividades del viaje"),
             isActive: _currentStep == 2,

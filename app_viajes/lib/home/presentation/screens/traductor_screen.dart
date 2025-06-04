@@ -12,7 +12,7 @@ class TranslationScreen extends StatefulWidget {
 class _TranslationScreenState extends State<TranslationScreen> {
   // --- ¡AQUÍ ES DONDE PONES TU API KEY DIRECTAMENTE! ---
   // Reemplaza 'TU_CLAVE_DE_API_DE_GEMINI_AQUI' con tu clave real.
-  static const String _geminiApiKey = 'TU_CLAVE_DE_API_DE_GEMINI_AQUI';
+  static const String _geminiApiKey = 'AIzaSyB_mmfa4J2TdW4atYzqi8DjDJv4wOodTkU';
   // ---------------------------------------------------
 
   final _textController = TextEditingController();
@@ -58,8 +58,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
     });
 
     // Ahora usamos la clave de API directamente desde la constante
-    if (_geminiApiKey.isEmpty ||
-        _geminiApiKey == 'AIzaSyBFt-oS6LY_CPu6YwDHgfRbKNl63EFxA0k') {
+    if (_geminiApiKey.isEmpty) {
       setState(() {
         _translatedText = 'La clave de API de Gemini no ha sido configurada.';
         _isLoading = false;
@@ -68,7 +67,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
     }
 
     try {
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: _geminiApiKey);
+      final model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: _geminiApiKey);
       final content = [
         Content.text(
           'Traduce la siguiente frase de "$sourceLanguageCode" a "$targetLanguageCode": "$text"',
@@ -156,8 +155,8 @@ class _TranslationScreenState extends State<TranslationScreen> {
                         if (textToTranslate.isNotEmpty) {
                           _translateText(
                             textToTranslate,
-                            _getCodeFromName(_selectedSourceLanguageName),
-                            _getCodeFromName(_selectedTargetLanguageName),
+                            _selectedSourceLanguageName,
+                            _selectedTargetLanguageName,
                           );
                         }
                       },
@@ -187,8 +186,8 @@ class _TranslationScreenState extends State<TranslationScreen> {
                         _textController.text = phrase;
                         _translateText(
                           phrase,
-                          _getCodeFromName(_selectedSourceLanguageName),
-                          _getCodeFromName(_selectedTargetLanguageName),
+                          _selectedSourceLanguageName,
+                          _selectedTargetLanguageName,
                         );
                       },
                       child: Text(phrase),

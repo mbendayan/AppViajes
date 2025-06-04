@@ -15,7 +15,7 @@ class ActivitiesScreen extends StatefulWidget {
 class _ActivitiesScreenState extends State<ActivitiesScreen> {
   final List<Steps> activities = [
     Steps(
-      id: '1',
+      id: 1,
       travelId: 'T1',
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(hours: 3)),
@@ -25,7 +25,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
       recommendations: 'Llevar ropa cómoda.',
     ),
     Steps(
-      id: '2',
+      id: 2,
       travelId: 'T1',
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(hours: 2)),
@@ -35,7 +35,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
       recommendations: 'Aprenderás recetas locales.',
     ),
     Steps(
-      id: '3',
+      id: 3,
       travelId: 'T1',
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(days: 1)),
