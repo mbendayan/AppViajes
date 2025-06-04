@@ -1,4 +1,4 @@
-class Step {
+class Steps {
   final String id;
   final String? travelId;
   final DateTime startDate;
@@ -8,7 +8,7 @@ class Step {
   final double cost;
   final String recommendations;
 
-  Step({
+  Steps({
     required this.id,
     required this.travelId,
     required this.startDate,
@@ -19,7 +19,7 @@ class Step {
     required this.recommendations,
   });
 
-  factory Step.fromJson(Map<String, dynamic> json) => Step(
+  factory Steps.fromJson(Map<String, dynamic> json) => Steps(
     id: json['id'],
     travelId: json['travelId'],
     startDate: DateTime.parse(json['startDate']),

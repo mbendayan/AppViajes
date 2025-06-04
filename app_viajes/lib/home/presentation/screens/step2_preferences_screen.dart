@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 
-class PreferencesScreen extends StatefulWidget {
-  const PreferencesScreen({super.key});
+class Step2PreferencesScreen extends StatefulWidget {
+  final bool isViewMode; // Nuevo parámetro para modo visualizar
+
+  const Step2PreferencesScreen({super.key, this.isViewMode = false});
+
   static const name = 'preferences';
 
   @override
-  State<PreferencesScreen> createState() => _PreferencesScreenState();
+  State<Step2PreferencesScreen> createState() => _Step2PreferencesScreenState();
 }
 
-class _PreferencesScreenState extends State<PreferencesScreen> {
+class _Step2PreferencesScreenState extends State<Step2PreferencesScreen> {
   final TextEditingController _budgetController = TextEditingController();
   String? _selectedAccommodation;
   String? _selectedTravelType;
   List<String> _selectedTransports = [];
 
-  // Identificador del panel expandido actualmente
   String? _expandedSection;
 
   final List<Map<String, dynamic>> _accommodationOptions = [
@@ -39,18 +41,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   ];
 
   void _toggleTransport(String transport) {
-    setState(() {
-      _selectedTransports.contains(transport)
-          ? _selectedTransports.remove(transport)
-          : _selectedTransports.add(transport);
-    });
-  }
-
-  void _savePreferences() {
-    print('Budget: ${_budgetController.text}');
-    print('Accommodation: $_selectedAccommodation');
-    print('Travel Type: $_selectedTravelType');
-    print('Transport Types: $_selectedTransports');
+    if (!widget.isViewMode) {
+      setState(() {
+        _selectedTransports.contains(transport)
+            ? _selectedTransports.remove(transport)
+            : _selectedTransports.add(transport);
+      });
+    }
   }
 
   Widget _buildGridOptions({
@@ -61,14 +58,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     List<String>? selectedList,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: GridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 2,
-        childAspectRatio: 3,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        crossAxisCount: 3,
+        childAspectRatio: 2.5,
+        crossAxisSpacing: 6,
+        mainAxisSpacing: 6,
         children:
             options.map((option) {
               final label = option['label'];
@@ -79,28 +76,33 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                       : selected == label;
 
               return GestureDetector(
-                onTap: () => onSelect(label),
+                onTap: widget.isViewMode ? null : () => onSelect(label),
                 child: Container(
                   decoration: BoxDecoration(
                     color:
                         isSelected
                             ? Colors.blue.shade100
                             : Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(6),
                     border: Border.all(
                       color: isSelected ? Colors.blue : Colors.transparent,
-                      width: 2,
+                      width: 1,
                     ),
                   ),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                    horizontal: 6,
+                    vertical: 4,
                   ),
-                  child: Row(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(icon, color: Colors.black54),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(label)),
+                      Icon(icon, size: 16, color: Colors.black54),
+                      const SizedBox(height: 4),
+                      Text(
+                        label,
+                        style: const TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
                     ],
                   ),
                 ),
@@ -113,7 +115,6 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Preferences'), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -136,6 +137,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    enabled:
+                        !widget
+                            .isViewMode, // Deshabilitar si es modo visualizar
                   ),
                 ),
               ),
@@ -177,23 +181,20 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
               ),
             ],
             expansionCallback: (index, isExpanded) {
-              setState(() {
-                _expandedSection =
-                    isExpanded
-                        ? null
-                        : [
-                          'budget',
-                          'accommodation',
-                          'travelType',
-                          'transport',
-                        ][index];
-              });
+              if (!widget.isViewMode) {
+                setState(() {
+                  _expandedSection =
+                      isExpanded
+                          ? null
+                          : [
+                            'budget',
+                            'accommodation',
+                            'travelType',
+                            'transport',
+                          ][index];
+                });
+              }
             },
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _savePreferences,
-            child: const Text('Guardar Preferencias'),
           ),
         ],
       ),

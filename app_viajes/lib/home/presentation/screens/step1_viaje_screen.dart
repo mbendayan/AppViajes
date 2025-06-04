@@ -1,13 +1,9 @@
-import 'package:app_viajes/home/presentation/providers/stepper_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/*final stepperProvider = StateNotifierProvider<StepperProvider, bool>(
-  (ref) => StepperProvider(),
-);*/
 
 class Step1ViajeScreen extends StatefulWidget {
-  const Step1ViajeScreen({super.key});
+  final bool isViewMode; // Nuevo parámetro para determinar el modo
+
+  const Step1ViajeScreen({super.key, this.isViewMode = false});
 
   @override
   State<Step1ViajeScreen> createState() => Step1ViajeState();
@@ -29,6 +25,8 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
   }
 
   Future<void> _selectFecha(BuildContext context, bool esInicio) async {
+    if (widget.isViewMode) return; // Evita la interacción en modo visualizar
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -58,6 +56,9 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
               TextFormField(
                 controller: _tituloController,
                 decoration: const InputDecoration(labelText: "Título"),
+                readOnly:
+                    widget
+                        .isViewMode, // Campo de solo lectura si está en modo visualizar
                 validator:
                     (value) =>
                         value == null || value.isEmpty
@@ -67,6 +68,7 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
               TextFormField(
                 controller: _destinoController,
                 decoration: const InputDecoration(labelText: "Destino"),
+                readOnly: widget.isViewMode,
                 validator:
                     (value) =>
                         value == null || value.isEmpty
@@ -80,7 +82,10 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
                   const SizedBox(width: 10),
                   const Text("Fecha de Inicio: "),
                   TextButton(
-                    onPressed: () => _selectFecha(context, true),
+                    onPressed:
+                        widget.isViewMode
+                            ? null // Botón deshabilitado si está en modo visualizar
+                            : () => _selectFecha(context, true),
                     child: Text(
                       _fechaInicio == null
                           ? "Seleccionar"
@@ -95,7 +100,10 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
                   const SizedBox(width: 10),
                   const Text("Fecha de Fin: "),
                   TextButton(
-                    onPressed: () => _selectFecha(context, false),
+                    onPressed:
+                        widget.isViewMode
+                            ? null
+                            : () => _selectFecha(context, false),
                     child: Text(
                       _fechaFin == null
                           ? "Seleccionar"
@@ -116,6 +124,7 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
                 controller: _costoController,
                 decoration: const InputDecoration(labelText: "Costo Total (€)"),
                 keyboardType: TextInputType.number,
+                readOnly: widget.isViewMode,
                 validator:
                     (value) =>
                         value == null || value.isEmpty
@@ -127,6 +136,7 @@ class Step1ViajeState extends State<Step1ViajeScreen> {
                 controller: _descripcionController,
                 decoration: const InputDecoration(labelText: "Descripción"),
                 maxLines: 3,
+                readOnly: widget.isViewMode,
               ),
             ],
           ),
