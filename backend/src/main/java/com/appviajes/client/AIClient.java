@@ -7,4 +7,7 @@ import java.util.List;
 public interface AIClient {
 
   List<TravelStepEntity> generateTravelSteps(TravelEntity travelEntity);
+  String generateRecommendations(TravelEntity travelEntity);
+  List<TravelStepEntity> generateNewTravelSteps(TravelEntity travelEntity);
+
 }

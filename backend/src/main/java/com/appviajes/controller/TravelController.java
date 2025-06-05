@@ -5,9 +5,14 @@ import com.appviajes.model.dtos.CreateTravelResponse;
 import com.appviajes.model.dtos.InviteRequest;
 import com.appviajes.model.dtos.TravelStepRequest;
 import com.appviajes.model.dtos.TravelStepsRequest;
+import com.appviajes.model.dtos.TravelUpdateRequest;
+import com.appviajes.model.dtos.UpdateStepsRequest;
 import com.appviajes.model.entities.TravelEntity;
+import com.appviajes.model.entities.TravelStepEntity;
 import com.appviajes.service.TravelService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +60,45 @@ public ResponseEntity<?> invitarUsuario(@PathVariable Long userId, @RequestBody 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
+@PutMapping("/{travelId}")
+public ResponseEntity<?> updateTravel(@PathVariable Long travelId, @RequestBody TravelUpdateRequest updatedTravel) {
+    try {
+        travelService.updateTravel(travelId, updatedTravel);
+        return ResponseEntity.ok("Viaje actualizado correctamente");
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+}
+
+@PutMapping("/{travelId}/steps")
+public ResponseEntity<?> updateTravelSteps(
+    @PathVariable Long travelId,
+    @RequestBody UpdateStepsRequest request
+) {
+    try {
+        travelService.updateSteps(travelId, request.getSteps());
+        return ResponseEntity.ok("Steps actualizados correctamente");
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+}
+
+@GetMapping("/{travelId}/recommendations")
+public ResponseEntity<?> getRecommendations(@PathVariable Long travelId) {
+    try {
+        String recommendations = travelService.getRecommendations(travelId);
+        return ResponseEntity.ok(recommendations);
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+}
+
+@PostMapping("/{travelId}/generateSteps")
+public ResponseEntity<?> generateNewSteps (@PathVariable Long travelId){
+  List<TravelStepEntity> steps = travelService.generateNewSteps(travelId);
+  return  ResponseEntity.ok(steps);
+}
+
+
 
 }

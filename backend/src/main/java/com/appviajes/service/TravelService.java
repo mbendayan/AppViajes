@@ -4,12 +4,15 @@ import static com.appviajes.model.enums.ErrorEnum.TRAVEL_NOT_FOUND;
 import static java.lang.String.join;
 
 import com.appviajes.client.AIClient;
+import com.appviajes.client.GeminiClient;
 import com.appviajes.exception.RestException;
 import com.appviajes.model.dtos.CreateTravelRequest;
 import com.appviajes.model.dtos.InviteRequest;
 import com.appviajes.model.dtos.PreferenciasRequest;
 import com.appviajes.model.dtos.TravelStepRequest;
+
 import com.appviajes.model.dtos.TravelStepsRequest;
+import com.appviajes.model.dtos.TravelUpdateRequest;
 import com.appviajes.model.entities.Preferences;
 import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelInvitationEntity;
@@ -52,7 +55,8 @@ public class TravelService {
   private UserRepository userRepository;
   @Autowired
   private TravelInvitationRepository invitationRepository;
-
+  @Autowired
+private final GeminiClient geminiClient;
 
   public TravelEntity findTravel(Long id) {
     return travelRepository
@@ -181,7 +185,73 @@ public void responderInvitacion(Long userId, Long invitationId, String response)
     invitationRepository.save(invitation);
 }
 
+public void updateTravel(Long travelId, TravelUpdateRequest request) {
+    TravelEntity existingTravel = travelRepository.findById(travelId)
+        .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
 
+    existingTravel.setName(request.getName());
+    existingTravel.setDestination(request.getDestination());
+    existingTravel.setStartDate(request.getStartDate());
+    existingTravel.setEndDate(request.getEndDate());
 
+    if (request.getPreferences() != null) {
+        Preferences preferences = existingTravel.getPreferences();
+        if (preferences == null) {
+            preferences = new Preferences();
+        }
+
+        preferences.setPresupuesto(PresupuestoEnum.valueOf(request.getPreferences().getPresupuesto()));
+        preferences.setMontoPersonalizado(request.getPreferences().getMontoPersonalizado());
+        preferences.setTipoViaje(TipoViajeEnum.valueOf(request.getPreferences().getTipoViaje()));
+        preferences.setTipoAlojamiento(TipoAlojamientoEnum.valueOf(request.getPreferences().getTipoAlojamiento()));
+        preferences.setTipoTransporte(TipoTransporteEnum.valueOf(request.getPreferences().getTipoTransporte()));
+
+        existingTravel.setPreferences(preferences);
+    }
+
+    travelRepository.save(existingTravel);
+}
+public void updateSteps(Long travelId, List<TravelStepRequest> updatedSteps) {
+    TravelEntity travel = travelRepository.findById(travelId)
+        .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
+
+    // Limpiar steps actuales
+    travel.getSteps().clear();
+
+    // Mapear los nuevos steps
+    List<TravelStepEntity> newSteps = updatedSteps.stream().map(stepDto -> {
+        TravelStepEntity step = new TravelStepEntity();
+        step.setName(stepDto.getName());
+        step.setDescription(stepDto.getDescription());
+        step.setLocation(stepDto.getLocation());
+        step.setStartDate(stepDto.getStartDate());
+        step.setEndDate(stepDto.getEndDate());
+        step.setCost(stepDto.getCost());
+        step.setRecommendations(stepDto.getRecommendations());
+        return step;
+    }).toList();
+
+    // Reemplazar steps
+    travel.setSteps(newSteps);
+    travelRepository.save(travel);
+}
+
+public String getRecommendations(Long travelId) {
+    TravelEntity travel = travelRepository.findById(travelId)
+            .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
+
+    return geminiClient.generateRecommendations(travel);
+}
+
+public List<TravelStepEntity> generateNewSteps(Long travelId){
+    TravelEntity travel = travelRepository.findById(travelId)
+    .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
+    
+    List<TravelStepEntity> newSteps = geminiClient.generateNewTravelSteps(travel);
+    travel.setSteps(newSteps);
+    travelRepository.save(travel);
+    return newSteps;
+
+}
 
 }
