@@ -1,5 +1,6 @@
 import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_another_travels_screen.dart';
+import 'package:app_viajes/home/presentation/screens/login_screen.dart';
 import 'package:app_viajes/home/presentation/screens/preferences_screen.dart';
 import 'package:app_viajes/home/presentation/screens/abm_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/get_travels_screen.dart';
@@ -12,13 +13,14 @@ import 'package:go_router/go_router.dart';
 import 'package:app_viajes/home/presentation/screens/home_screen.dart';
 import 'package:app_viajes/home/presentation/screens/settings_screen.dart';
 
+
 final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
       name: 'login',
       path: '/',
-      builder: (context, state) => HomeScreen(),
+      builder: (context, state) => LoginScreen(),
     ),
     GoRoute(
       name: RegisterScreen.name,
@@ -65,12 +67,12 @@ final appRouter = GoRouter(
           (context, state) => VerActividadScreen(
             activity: Steps(
               id: 1,
-              travelId: "",
+             
               startDate: DateTime.now(),
               endDate: DateTime.now(),
               location: "",
               name: "",
-              cost: 0,
+              cost: "",
               recommendations: "",
             ),
           ),

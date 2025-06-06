@@ -16,32 +16,32 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   final List<Steps> activities = [
     Steps(
       id: 1,
-      travelId: 'T1',
+     
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(hours: 3)),
       location: 'Valle Central',
       name: 'Paseo en globo aerostático',
-      cost: 150.0,
+      cost: "150.0",
       recommendations: 'Llevar ropa cómoda.',
     ),
     Steps(
       id: 2,
-      travelId: 'T1',
+     
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(hours: 2)),
       location: 'Valle Central',
       name: 'Clase de cocina local',
-      cost: 80.0,
+      cost: "80.0",
       recommendations: 'Aprenderás recetas locales.',
     ),
     Steps(
       id: 3,
-      travelId: 'T1',
+    
       startDate: DateTime.now(),
       endDate: DateTime.now().add(Duration(days: 1)),
       location: 'Valle Central',
       name: 'Excursión al Parque Nacional',
-      cost: 50.0,
+      cost: "50.0",
       recommendations: 'Llevar calzado cómodo y agua.',
     ),
   ];
@@ -144,7 +144,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                                     'Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}',
                                   ),
                                   Text(
-                                    'Costo: ${activity.cost.toStringAsFixed(2)} €',
+                                    'Costo: ${activity.cost} €',
                                   ),
                                   Text(
                                     'Recomendaciones: ${activity.recommendations}',

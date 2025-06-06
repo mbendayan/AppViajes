@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,19 +60,22 @@ class _Step2PreferencesScreenState
     
 
   void _savePreferencesToProvider() {
-    final budgetText = _budgetController.text.trim();
-    final preferences = <String>[
-      if (budgetText.isNotEmpty) 'Presupuesto: $budgetText',
-      if (_selectedAccommodation != null) _selectedAccommodation!,
-      if (_selectedTravelType != null) _selectedTravelType!,
-      ..._selectedTransports,
-    ];
+  final budgetText = _budgetController.text.trim();
 
-    ref.read(travelFormProvider.notifier).updateForm(preferences: preferences);
+  final preferencesMap = {
+    'presupuesto': budgetText,
+    'tipoViaje': _selectedTravelType ?? '',
+    'tipoAlojamiento': _selectedAccommodation ?? '',
+    'tipoTransporte': _selectedTransports,
+  };
 
-    // Callback opcional
-    widget.onSaved?.call();
-  }
+  final preferencesJson = jsonEncode(preferencesMap);
+
+  ref.read(travelFormProvider.notifier).updateForm(preferences: preferencesJson);
+
+  widget.onSaved?.call();
+}
+
 
   Widget _buildGridOptions({
     required List<Map<String, dynamic>> options,

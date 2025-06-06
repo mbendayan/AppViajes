@@ -1,59 +1,51 @@
+import 'package:app_viajes/models/preferences.dart';
+import 'package:app_viajes/models/step.dart';
+
 class Travel {
-  final String id;
+  final int? id;
   final String name;
-  final int peopleCount;
-  final String travelType;
+  final String? preferences;
   final String destination;
-  final String code;
-  final bool isPublic;
-  final DateTime creationDate;
-  final String status;
-  final String creatorId;
-  final List<String> participantIds;
-  final List<String>? recommendationIds;
+  final DateTime? creationDate;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final List<Steps>? steps;
 
   Travel({
-    required this.id,
-    required this.name,
-    required this.peopleCount,
-    required this.travelType,
-    required this.destination,
-    required this.code,
-    required this.isPublic,
-    required this.creationDate,
-    required this.status,
-    required this.creatorId,
-    required this.participantIds,
-    this.recommendationIds,
+     this.id,
+     required this.name,
+     this.preferences,
+     required this.destination,
+     this.creationDate,
+     this.startDate,
+     this.endDate,
+     this.steps,
   });
 
-  factory Travel.fromJson(Map<String, dynamic> json) => Travel(
-    id: json['id'],
-    name: json['name'],
-    peopleCount: json['peopleCount'],
-    travelType: json['travelType'],
-    destination: json['destination'],
-    code: json['code'],
-    isPublic: json['isPublic'],
-    creationDate: DateTime.parse(json['creationDate']),
-    status: json['status'],
-    creatorId: json['creatorId'],
-    participantIds: List<String>.from(json['participantIds']),
-    recommendationIds: List<String>.from(json['recommendationIds'] ?? []),
-  );
+  factory Travel.fromJson(Map<String, dynamic> json) {
+    print("as");
+    return Travel(
+      id: json['id'],
+      name: json['name'],
+      preferences: json['preferences'],
+      destination: json['destination'],
+      creationDate: DateTime.parse(json['creationDate']),
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      steps: (json['steps'] as List)
+          .map((e) => Steps.fromJson(e))
+         .toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'peopleCount': peopleCount,
-    'travelType': travelType,
-    'destination': destination,
-    'code': code,
-    'isPublic': isPublic,
-    'creationDate': creationDate.toIso8601String(),
-    'status': status,
-    'creatorId': creatorId,
-    'participantIds': participantIds,
-    'recommendationIds': recommendationIds,
-  };
+        'id': id,
+        'name': name,
+        'preferences': preferences,
+        'destination': destination,
+        'creationDate': creationDate?.toIso8601String(),
+        'startDate': startDate?.toIso8601String(),
+        'endDate': endDate?.toIso8601String(),
+        'steps': steps?.map((e) => e.toJson()).toList(),
+      };
 }

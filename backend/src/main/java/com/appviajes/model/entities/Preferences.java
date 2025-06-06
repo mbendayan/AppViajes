@@ -19,17 +19,14 @@ public class Preferences {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private PresupuestoEnum presupuesto;
+    private String presupuesto; // solo si elige PERSONALIZADO
 
-    private Double montoPersonalizado; // solo si elige PERSONALIZADO
 
-    @Enumerated(EnumType.STRING)
-    private TipoViajeEnum tipoViaje;
+    private String tipoViaje;
 
-    @Enumerated(EnumType.STRING)
-    private TipoAlojamientoEnum tipoAlojamiento;
 
-    @Enumerated(EnumType.STRING)
-    private TipoTransporteEnum tipoTransporte;
+    private String tipoAlojamiento;
+
+
+    private String tipoTransporte;
 }

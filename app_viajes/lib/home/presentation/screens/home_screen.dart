@@ -18,10 +18,10 @@ class LoginScreen extends ConsumerWidget {
     (ref) => UserNotifier(
       User(
         username: '',
-        id: '',
+        id: 0,
         email: '',
         password: '',
-        registerDate: DateTime.now(),
+        
       ),
     ),
   );

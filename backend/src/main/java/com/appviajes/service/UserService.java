@@ -63,11 +63,10 @@ public class UserService {
         Preferences preferences = new Preferences();
 
         try {
-            preferences.setPresupuesto(PresupuestoEnum.valueOf(request.getPresupuesto()));
-            preferences.setMontoPersonalizado(request.getMontoPersonalizado());
-            preferences.setTipoViaje(TipoViajeEnum.valueOf(request.getTipoViaje()));
-            preferences.setTipoAlojamiento(TipoAlojamientoEnum.valueOf(request.getTipoAlojamiento()));
-            preferences.setTipoTransporte(TipoTransporteEnum.valueOf(request.getTipoTransporte()));
+            preferences.setPresupuesto(request.getPresupuesto());
+            preferences.setTipoViaje(request.getTipoViaje());
+            preferences.setTipoAlojamiento(request.getTipoAlojamiento());
+            preferences.setTipoTransporte(request.getTipoTransporte());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Valor inválido en las preferencias: " + e.getMessage());
         }
@@ -83,7 +82,6 @@ public class UserService {
         Preferences prefs = user.getPreferencias();
         if (prefs != null) {
             prefs.setPresupuesto(null);
-            prefs.setMontoPersonalizado(null);
             prefs.setTipoViaje(null);
             prefs.setTipoAlojamiento(null);
             prefs.setTipoTransporte(null);
@@ -105,18 +103,16 @@ public class UserService {
     
         if (preferences == null) {
             dto.setPresupuesto(null);
-            dto.setMontoPersonalizado(0.0);
             dto.setTipoViaje(null);
             dto.setTipoAlojamiento(null);
             dto.setTipoTransporte(null);
             return dto;
         }
     
-        dto.setPresupuesto(preferences.getPresupuesto() != null ? preferences.getPresupuesto().name() : null);
-        dto.setMontoPersonalizado(preferences.getMontoPersonalizado() != null ? preferences.getMontoPersonalizado() : 0.0);
-        dto.setTipoViaje(preferences.getTipoViaje() != null ? preferences.getTipoViaje().name() : null);
-        dto.setTipoAlojamiento(preferences.getTipoAlojamiento() != null ? preferences.getTipoAlojamiento().name() : null);
-        dto.setTipoTransporte(preferences.getTipoTransporte() != null ? preferences.getTipoTransporte().name() : null);
+        dto.setPresupuesto(preferences.getPresupuesto() != null ? preferences.getPresupuesto() : null);
+        dto.setTipoViaje(preferences.getTipoViaje() != null ? preferences.getTipoViaje() : null);
+        dto.setTipoAlojamiento(preferences.getTipoAlojamiento() != null ? preferences.getTipoAlojamiento() : null);
+        dto.setTipoTransporte(preferences.getTipoTransporte() != null ? preferences.getTipoTransporte() : null);
     
         return dto;
     }

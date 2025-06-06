@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 class User {
-  final String id;
+  final int id;
 
-  final String username;
+  final String? username;
   final String email;
-  final String password;
-  final DateTime registerDate;
+  final String? password;
+  
 
   User({
     required this.id,
-    required this.username,
+    this.username,
     required this.email,
-    required this.password,
-    required this.registerDate,
+     this.password,
+     
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -22,7 +22,7 @@ class User {
       username: json['username'],
       email: json['email'],
       password: json['password'],
-      registerDate: DateTime.parse(json['registerDate']),
+
     );
   }
 
@@ -32,7 +32,7 @@ class User {
       'username': username,
       'email': email,
       'passwordHash': password,
-      'fechaRegistro': registerDate.toIso8601String(),
+      
     };
   }
 }

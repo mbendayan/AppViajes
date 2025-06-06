@@ -80,7 +80,7 @@ private final GeminiClient geminiClient;
   private TravelEntity buildTravelEntity(CreateTravelRequest request) {
     TravelEntity travelEntity = new TravelEntity();
     travelEntity.setName(request.name());
-    travelEntity.setPreferences(mapToPreferences(request.preferences()));
+    travelEntity.setPreferences(request.preferences());
     travelEntity.setDestination(request.destination());
     travelEntity.setCreationDate(LocalDateTime.now());
     travelEntity.setStartDate(request.startDate());
@@ -130,11 +130,10 @@ public TravelStepsRequest getTravelStepsById(Long id) {
 
 private Preferences mapToPreferences(PreferenciasRequest request) {
     Preferences preferences = new Preferences();
-    preferences.setPresupuesto(PresupuestoEnum.valueOf(request.getPresupuesto().toUpperCase()));
-    preferences.setMontoPersonalizado(request.getMontoPersonalizado());
-    preferences.setTipoViaje(TipoViajeEnum.valueOf(request.getTipoViaje().toUpperCase()));
-    preferences.setTipoAlojamiento(TipoAlojamientoEnum.valueOf(request.getTipoAlojamiento().toUpperCase()));
-    preferences.setTipoTransporte(TipoTransporteEnum.valueOf(request.getTipoTransporte().toUpperCase()));
+    preferences.setPresupuesto(request.getPresupuesto().toUpperCase());
+    preferences.setTipoViaje(request.getTipoViaje().toUpperCase());
+    preferences.setTipoAlojamiento(request.getTipoAlojamiento().toUpperCase());
+    preferences.setTipoTransporte(request.getTipoTransporte().toUpperCase());
     return preferences;
 }
 public void enviarInvitacion(Long invitadorId, InviteRequest request) {

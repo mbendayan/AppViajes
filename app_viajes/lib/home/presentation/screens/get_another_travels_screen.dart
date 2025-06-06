@@ -1,39 +1,39 @@
-import 'package:app_viajes/models/travelMenuItem.dart';
+import 'package:app_viajes/home/presentation/providers/travel_item_provider.dart';
+import 'package:app_viajes/models/trave_menu_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class GetAnotherTravelsScreen extends StatefulWidget {
+
+class GetAnotherTravelsScreen extends ConsumerWidget {
   static const name = 'getAnotherTravels_screen';
 
   const GetAnotherTravelsScreen({super.key});
 
   @override
-  State<GetAnotherTravelsScreen> createState() =>
-      _GetAnotherTravelsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final travelItemsState = ref.watch(travelItemProvider);
 
-class _GetAnotherTravelsScreenState extends State<GetAnotherTravelsScreen> {
-  final List<TravelMenuItem> items = List.from(travelMenuItems);
-
-  void _removeItem(TravelMenuItem item) {
-    setState(() {
-      items.remove(item);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Gestión de viajes')),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = items[index];
-          return _CustomListTile(
-            item: item,
-            onDelete: () => _removeItem(item),
-            onEdit:
-                () => context.push("/nuevoViaje", extra: {'isViewMode': true}),
+      body: travelItemsState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+        data: (travelMenuItems) {
+          if (travelMenuItems.isEmpty) {
+            return const Center(child: Text('No hay viajes disponibles'));
+          }
+
+          return ListView.builder(
+            itemCount: travelMenuItems.length,
+            itemBuilder: (BuildContext context, int index) {
+              final item = travelMenuItems[index];
+              return _CustomListTile(
+                item: item,
+                onViewActivities: () =>
+                    context.push("/nuevoViaje", extra: {'isViewMode': true}),
+              );
+            },
           );
         },
       ),
@@ -43,13 +43,11 @@ class _GetAnotherTravelsScreenState extends State<GetAnotherTravelsScreen> {
 
 class _CustomListTile extends StatelessWidget {
   final TravelMenuItem item;
-  final VoidCallback onDelete;
-  final VoidCallback onEdit;
+  final VoidCallback onViewActivities;
 
   const _CustomListTile({
     required this.item,
-    required this.onDelete,
-    required this.onEdit,
+    required this.onViewActivities,
   });
 
   @override
@@ -68,10 +66,8 @@ class _CustomListTile extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text("Fecha Inicio: ${(item.dateStart)}"),
-            Text("Fecha Fin: ${(item.dateEnd)}"),
-            Text("Costo: ${item.price}"),
-
+            Text("Fecha Inicio: ${item.dateStart}"),
+            Text("Fecha Fin: ${item.dateEnd}"),
             const SizedBox(height: 8),
             Text(item.destination, style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 15),
@@ -79,7 +75,7 @@ class _CustomListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
-                  onPressed: onEdit,
+                  onPressed: onViewActivities,
                   icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
                   label: const Text("Ver actividades"),
                 ),

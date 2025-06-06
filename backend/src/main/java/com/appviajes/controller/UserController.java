@@ -1,10 +1,7 @@
 package com.appviajes.controller;
 
 
-import com.appviajes.model.dtos.LoginRequest;
-import com.appviajes.model.dtos.PreferenciasRequest;
-import com.appviajes.model.dtos.RegisterRequest;
-import com.appviajes.model.dtos.RespondInviteRequest;
+import com.appviajes.model.dtos.*;
 import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelInvitationEntity;
 import com.appviajes.model.entities.UserEntity;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "*")
 public class UserController {
    
  
@@ -77,7 +75,8 @@ public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 public ResponseEntity<?> getUserTravels(@PathVariable Long userId) {
     try {
         List<TravelEntity> travels = userService.getTravels(userId);
-        return ResponseEntity.ok(travels);
+        List<TravelDto > travelsDto = travels.stream().map(TravelDto::from).toList();
+        return ResponseEntity.ok(travelsDto);
     } catch (RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }

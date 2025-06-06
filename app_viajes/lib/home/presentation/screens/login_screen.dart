@@ -33,6 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       userState.when(
         data: (user) {
           if (user != null) {
+            
             context.push("/home");
           } else {
             _showError('Usuario o contraseña inválidos');

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/travels")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 // TODO: fix
 public class TravelController {
 

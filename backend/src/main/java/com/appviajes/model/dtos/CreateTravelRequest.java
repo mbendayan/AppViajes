@@ -14,4 +14,4 @@ public record CreateTravelRequest(
     String destination,
     LocalDateTime startDate ,
     LocalDateTime endDate,
-    PreferenciasRequest preferences) { }
+    String preferences) { }
