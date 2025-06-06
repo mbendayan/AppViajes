@@ -10,6 +10,7 @@ import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_viajes/home/presentation/screens/home_screen.dart';
+import 'package:app_viajes/home/presentation/screens/settings_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -23,6 +24,11 @@ final appRouter = GoRouter(
       name: RegisterScreen.name,
       path: '/registro',
       builder: (context, state) => RegisterScreen(),
+    ),
+    GoRoute(
+      name: SettingsScreen.name,
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
     ),
     GoRoute(
       name: PreferencesScreen.name,

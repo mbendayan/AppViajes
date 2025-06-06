@@ -1,6 +1,7 @@
 import 'package:app_viajes/models/travelMenuItem.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:app_viajes/shared/widgets/app_scaffold.dart';
 
 class GetTravelsScreen extends StatefulWidget {
   static const name = 'getTravels_screen';
@@ -22,8 +23,8 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Gestión de viajes')),
+    return AppScaffold(
+      title: 'Gestión de viajes',
       body: ListView.builder(
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
