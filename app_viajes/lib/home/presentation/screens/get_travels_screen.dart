@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_viajes/shared/widgets/app_scaffold.dart';
+
 
 class GetTravelsScreen extends ConsumerStatefulWidget {
   static const name = 'getTravels_screen';
@@ -39,10 +41,11 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final travelItemsState = ref.watch(travelItemProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Gestión de viajes')),
+    return AppScaffold(
+      title: 'Gestión de viajes',
       body: travelItemsState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
