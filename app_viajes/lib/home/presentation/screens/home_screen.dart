@@ -21,7 +21,7 @@ class LoginScreen extends ConsumerWidget {
         id: 0,
         email: '',
         password: '',
-        registerDate: DateTime.now(),
+        
       ),
     ),
   );

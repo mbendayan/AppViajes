@@ -13,11 +13,11 @@ class TravelFormNotifier extends StateNotifier<CreateTravelRequest> {
           destination: '',
           startDate: '',
           endDate: '',
-          preferences: [],
+          preferences: '',
         ));
   
   void updateForm({
-    required List<String> preferences,
+    required String preferences,
   }) {
     state.preferences = preferences;
 

@@ -5,8 +5,8 @@ class CreateTravelRequest{
      String startDate ;
     String endDate;
    
-     List<String> preferences;
- 
+     String preferences;
+
 
  CreateTravelRequest(
   {
@@ -22,7 +22,7 @@ CreateTravelRequest copyWith({
     String? destination,
     String? startDate,
     String? endDate,
-    List<String>? preferences,
+    String? preferences,
   }) {
     return CreateTravelRequest(
       name: name ?? this.name,

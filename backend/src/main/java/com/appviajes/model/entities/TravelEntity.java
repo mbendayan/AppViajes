@@ -27,9 +27,10 @@ public class TravelEntity {
 
   private String name;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "preferences_id", referencedColumnName = "id")
-  private Preferences preferences;
+  // @OneToOne(cascade = CascadeType.ALL)
+  // @JoinColumn(name = "preferences_id", referencedColumnName = "id")
+  private String preferences;
+
 
   private String destination;
 

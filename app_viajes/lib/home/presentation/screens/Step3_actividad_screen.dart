@@ -123,7 +123,7 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
                       children: [
                         Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
                         Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
-                        Text('Costo: ${activity.cost.toStringAsFixed(2)} €'),
+                        Text('Costo: ${activity.cost} €'),
                         Text('Recomendaciones: ${activity.recommendations}'),
                       ],
                     ),

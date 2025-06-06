@@ -1,5 +1,6 @@
 import 'package:app_viajes/home/presentation/providers/step_provider.dart';
 import 'package:app_viajes/models/step.dart';
+import 'package:app_viajes/models/travel.dart';
 import 'package:app_viajes/models/travel_request.dart';
 import 'package:app_viajes/models/travel_response.dart';
 import 'package:app_viajes/models/user.dart';
@@ -8,32 +9,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import '../../../config/dio/dio_client.dart';
 
-final travelProvider = StateNotifierProvider<TravelNotifier, AsyncValue<User?>>(
+final travelProvider = StateNotifierProvider<TravelNotifier, AsyncValue<List<Travel>>>(
   (ref) => TravelNotifier(),
 );
 
 
-class TravelNotifier extends StateNotifier<AsyncValue<User?>> {
-  TravelNotifier() : super(const AsyncValue.data(null)) {
-    _checkTokenOnInit();
-  }
+class TravelNotifier extends StateNotifier<AsyncValue<List<Travel>>> {
+  TravelNotifier() : super(const AsyncValue.loading());
 
   final Dio _dio = DioClient.getInstance();
 
-
-  Future<void> _checkTokenOnInit() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
-    if (token != null) {
-      try {
-        final response = await _dio.get('/auth/me');
-        final user = User.fromJson(response.data);
-        state = AsyncValue.data(user);
-      } catch (_) {
-        state = AsyncValue.data(null);
-      }
+Future<void> fetchUserTravels(int userId) async {
+    state = const AsyncValue.loading();
+    try {
+      final response = await _dio.get('/api/users/$userId/travels');
+      final List<Travel> travels = (response.data as List)
+          .map((e) => Travel.fromJson(e))
+          .toList();
+      state = AsyncValue.data(travels);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
     }
   }
+ 
 Future<void> createTravel(CreateTravelRequest request, WidgetRef ref) async {
     try {
       final response = await _dio.post(
@@ -63,4 +61,5 @@ Future<void> createTravel(CreateTravelRequest request, WidgetRef ref) async {
       rethrow;
     }
   }
+  
 }

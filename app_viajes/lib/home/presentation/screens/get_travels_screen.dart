@@ -1,37 +1,65 @@
-import 'package:app_viajes/models/travelMenuItem.dart';
+import 'package:app_viajes/home/presentation/providers/travel_item_provider.dart';
+import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
+import 'package:app_viajes/models/trave_menu_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class GetTravelsScreen extends StatefulWidget {
+class GetTravelsScreen extends ConsumerStatefulWidget {
   static const name = 'getTravels_screen';
 
   const GetTravelsScreen({super.key});
 
   @override
-  State<GetTravelsScreen> createState() => _GetTravelsScreenState();
+  ConsumerState<GetTravelsScreen> createState() => _GetTravelsScreenState();
 }
 
-class _GetTravelsScreenState extends State<GetTravelsScreen> {
-  final List<TravelMenuItem> items = List.from(travelMenuItems);
+class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadUserIdAndFetchTravels();
+  }
+
+  Future<void> _loadUserIdAndFetchTravels() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('userId');
+
+    if (userId != null) {
+      await ref.read(travelProvider.notifier).fetchUserTravels(userId);
+    } else {
+      debugPrint('No se encontró userId en SharedPreferences');
+    }
+  }
 
   void _removeItem(TravelMenuItem item) {
-    setState(() {
-      items.remove(item);
-    });
+    // Acá podrías agregar lógica para eliminar el viaje si es necesario
   }
 
   @override
   Widget build(BuildContext context) {
+    final travelItemsState = ref.watch(travelItemProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Gestión de viajes')),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = items[index];
-          return _CustomListTile(
-            item: item,
-            onDelete: () => _removeItem(item),
-            onEdit: () => context.push("/nuevoViaje"),
+      body: travelItemsState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+        data: (travelMenuItems) {
+          if (travelMenuItems.isEmpty) {
+            return const Center(child: Text('No hay viajes disponibles'));
+          }
+          return ListView.builder(
+            itemCount: travelMenuItems.length,
+            itemBuilder: (BuildContext context, int index) {
+              final item = travelMenuItems[index];
+              return _CustomListTile(
+                item: item,
+                onDelete: () => _removeItem(item),
+                onEdit: () => context.push("/nuevoViaje"),
+              );
+            },
           );
         },
       ),
@@ -51,12 +79,12 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      title: Text("Unirse a un viaje"),
+                      title: const Text("Unirse a un viaje"),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: "Código del viaje",
                               border: OutlineInputBorder(),
                             ),
@@ -68,19 +96,18 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
                       ),
                       actions: [
                         TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("Cancelar"),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("Cancelar"),
                         ),
                         ElevatedButton(
                           onPressed: () {
                             if (codigo != null && codigo!.isNotEmpty) {
                               print("Código ingresado: $codigo");
                               Navigator.pop(context);
+                              // Acá podrías agregar la lógica para unirse al viaje
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text(
                                     "Por favor, ingresa un código válido",
                                   ),
@@ -88,7 +115,7 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
                               );
                             }
                           },
-                          child: Text("Unirse"),
+                          child: const Text("Unirse"),
                         ),
                       ],
                     );
@@ -103,9 +130,7 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {
-                context.push("/nuevoViaje");
-              },
+              onPressed: () => context.push("/nuevoViaje"),
               tooltip: "Agregar Viaje",
               child: const Icon(Icons.add),
             ),
@@ -114,9 +139,7 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
             bottom: 202,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {
-                context.push("/traductor");
-              },
+              onPressed: () => context.push("/traductor"),
               tooltip: "Ver palabras clave",
               child: const Icon(Icons.translate),
             ),
@@ -125,9 +148,7 @@ class _GetTravelsScreenState extends State<GetTravelsScreen> {
             bottom: 144,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {
-                context.push("/verViajesYaHechos");
-              },
+              onPressed: () => context.push("/verViajesYaHechos"),
               tooltip: "Ver viajes ya hechos",
               child: const Icon(Icons.flight),
             ),
@@ -160,17 +181,10 @@ class _CustomListTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              item.title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text(item.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text("Fecha Inicio: ${(item.dateStart)}"),
-            Text("Fecha Fin: ${(item.dateEnd)}"),
-            Text("Costo: ${item.price}"),
-            Text("Codigo: ${item.code}"),
-
-            const SizedBox(height: 8),
+            Text("Fecha Inicio: ${item.dateStart}"),
+            Text("Fecha Fin: ${item.dateEnd}"),
             Text(item.destination, style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 15),
             Row(

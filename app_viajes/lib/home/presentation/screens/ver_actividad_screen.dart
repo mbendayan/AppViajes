@@ -45,7 +45,7 @@ class VerActividadScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    'Costo: ${activity.cost.toStringAsFixed(2)} €',
+                    'Costo: ${activity.cost} €',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 8),

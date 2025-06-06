@@ -1,5 +1,5 @@
 import 'package:app_viajes/models/step.dart';
-import 'package:flutter/material.dart';
+
 
 class CreateTravelResponse {
   final int id;

@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PreferenciasRequest {
 
-    private String presupuesto; 
-    private Double montoPersonalizado; 
+    private String presupuesto;
     private String tipoViaje;          
     private String tipoAlojamiento;    
     private String tipoTransporte;     

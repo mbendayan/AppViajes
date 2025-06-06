@@ -1,3 +1,4 @@
+import 'package:app_viajes/models/travel.dart';
 import 'package:app_viajes/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +45,9 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     
 
     state = AsyncValue.data(user);
+     final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('userId', user.id);
+    await prefs.setString('userEmail', user.email);
     return 'success';
   } catch (e, st) {
     state = AsyncValue.error(e, st);
@@ -59,10 +63,10 @@ Future<String> register(String email, String password) async {
       'password': password,
     });
 
-    final token = response.data['token'];
+  
     final user = User.fromJson(response.data['user']);
 
-    await _saveToken(token);
+  
 
     state = AsyncValue.data(user);
     return 'success';
@@ -71,6 +75,9 @@ Future<String> register(String email, String password) async {
     return 'Error al registrarse: ${_parseError(e)}';
   }
 }
+
+
+
 
 String? _parseError(Object error) {
   if (error is DioException) {

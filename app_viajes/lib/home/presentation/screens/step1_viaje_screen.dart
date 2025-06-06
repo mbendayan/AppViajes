@@ -50,17 +50,6 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
     }
   }
 
-  void _saveStep1Provider() {
-  if (_fechaInicio == null || _fechaFin == null) return;
-
-  ref.read(travelFormProvider.notifier).updateForm2(
-    name: _tituloController.text,
-    destination: _destinoController.text,
-    startDate: _fechaInicio!.toIso8601String(),
-    endDate: _fechaFin!.toIso8601String(),
-    
-  );
-}
 
 
   @override
