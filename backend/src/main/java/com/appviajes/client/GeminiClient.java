@@ -128,7 +128,7 @@ public class GeminiClient implements AIClient {
         .replace("{destination}", travel.getDestination())
         .replace("{startDate}" , travel.getStartDate().toString())
         .replace("{endDate}", travel.getEndDate().toString())
-        .replace("{preferences}", buildPreferencesText(travel.getPreferences()))
+        .replace("{preferences}", travel.getPreferences())
         ;
   }
   private String buildRecommendationPrompt(TravelEntity travel) {

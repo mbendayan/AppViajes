@@ -194,18 +194,18 @@ public void updateTravel(Long travelId, TravelUpdateRequest request) {
     existingTravel.setEndDate(request.getEndDate());
 
     if (request.getPreferences() != null) {
-        Preferences preferences = existingTravel.getPreferences();
+        String preferences = existingTravel.getPreferences();
         if (preferences == null) {
-            preferences = new Preferences();
+            preferences = "";
         }
-
+        /*
         preferences.setPresupuesto(PresupuestoEnum.valueOf(request.getPreferences().getPresupuesto()));
         preferences.setMontoPersonalizado(request.getPreferences().getMontoPersonalizado());
         preferences.setTipoViaje(TipoViajeEnum.valueOf(request.getPreferences().getTipoViaje()));
         preferences.setTipoAlojamiento(TipoAlojamientoEnum.valueOf(request.getPreferences().getTipoAlojamiento()));
         preferences.setTipoTransporte(TipoTransporteEnum.valueOf(request.getPreferences().getTipoTransporte()));
 
-        existingTravel.setPreferences(preferences);
+        existingTravel.setPreferences(preferences);*/
     }
 
     travelRepository.save(existingTravel);
