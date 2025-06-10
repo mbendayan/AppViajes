@@ -7,23 +7,15 @@ import 'package:go_router/go_router.dart';
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return LoginScreen(); // Solo devuelve el contenido
+    return LoginScreen2(); // Solo devuelve el contenido
   }
 }
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen2 extends ConsumerWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final userProvider = StateNotifierProvider<UserNotifier, User>(
-    (ref) => UserNotifier(
-      User(
-        username: '',
-        id: 0,
-        email: '',
-        password: '',
-        
-      ),
-    ),
+    (ref) => UserNotifier(User(username: '', id: 0, email: '', password: '')),
   );
 
   @override

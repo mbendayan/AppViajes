@@ -1,12 +1,14 @@
-import 'package:app_viajes/home/presentation/providers/travel_item_provider.dart';
-import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
-import 'package:app_viajes/models/trave_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:app_viajes/shared/widgets/app_scaffold.dart';
 
+import 'package:app_viajes/home/presentation/providers/travel_item_provider.dart';
+import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
+import 'package:app_viajes/models/trave_menu_item.dart';
+import 'package:app_viajes/shared/widgets/app_scaffold.dart';
 
 class GetTravelsScreen extends ConsumerStatefulWidget {
   static const name = 'getTravels_screen';
@@ -18,6 +20,9 @@ class GetTravelsScreen extends ConsumerStatefulWidget {
 }
 
 class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
+  List<dynamic> invitations = [];
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -39,9 +44,148 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
     // Acá podrías agregar lógica para eliminar el viaje si es necesario
   }
 
+  Future<void> fetchInvitations() async {
+    setState(() {
+      isLoading = true;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('userId');
+
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "http://localhost:8080/api/users/${userId}/invitations/received",
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          invitations = json.decode(response.body);
+        });
+      } else {
+        throw Exception("Failed to load invitations");
+      }
+    } catch (error) {
+      debugPrint("Error fetching invitations: $error");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> respondToInvitation(int invitationId, String response) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getInt('userId');
+
+      final url = Uri.parse(
+        "http://localhost:8080/api/users/$userId/invitations/$invitationId/respond",
+      );
+
+      final body = jsonEncode({'response': response});
+
+      final headers = {'Content-Type': 'application/json'};
+
+      final httpResponse = await http.post(url, body: body, headers: headers);
+
+      if (httpResponse.statusCode == 200) {
+        // Refresh the invitations list
+        await fetchInvitations();
+      } else {
+        throw Exception("Failed to respond to invitation");
+      }
+    } catch (error) {
+      debugPrint("Error responding to invitation: $error");
+    }
+  }
+
+  void showInvitationsDialog() async {
+    await fetchInvitations();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Invitaciones Recibidas"),
+          content:
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : invitations.isEmpty
+                  ? const Text("No tienes invitaciones pendientes.")
+                  : SizedBox(
+                    width: double.maxFinite,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: invitations.length,
+                      itemBuilder: (context, index) {
+                        final invitation = invitations[index];
+                        final isAccepted = invitation['status'] == 'ACCEPTED';
+                        final isRejected = invitation['status'] == 'REJECTED';
+
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            title: Text(invitation['travelName']),
+                            trailing:
+                                isAccepted
+                                    ? const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                    )
+                                    : isRejected
+                                    ? const Icon(
+                                      Icons.cancel,
+                                      color: Colors.red,
+                                    )
+                                    : Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed:
+                                              () => respondToInvitation(
+                                                invitation['id'],
+                                                "ACCEPTED",
+                                              ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                          ),
+                                          child: const Text("Aceptar"),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        ElevatedButton(
+                                          onPressed:
+                                              () => respondToInvitation(
+                                                invitation['id'],
+                                                "REJECTED",
+                                              ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                          ),
+                                          child: const Text("Rechazar"),
+                                        ),
+                                      ],
+                                    ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cerrar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final travelItemsState = ref.watch(travelItemProvider);
 
     return AppScaffold(
@@ -57,7 +201,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
             itemCount: travelMenuItems.length,
             itemBuilder: (BuildContext context, int index) {
               final item = travelMenuItems[index];
-              return _CustomListTile(
+              return CustomListTile(
                 item: item,
                 onDelete: () => _removeItem(item),
                 onEdit: () => context.push("/nuevoViaje"),
@@ -73,58 +217,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
             bottom: 80,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String? codigo;
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: const Text("Unirse a un viaje"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            decoration: const InputDecoration(
-                              labelText: "Código del viaje",
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: (value) {
-                              codigo = value;
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("Cancelar"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (codigo != null && codigo!.isNotEmpty) {
-                              print("Código ingresado: $codigo");
-                              Navigator.pop(context);
-                              // Acá podrías agregar la lógica para unirse al viaje
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "Por favor, ingresa un código válido",
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text("Unirse"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              onPressed: showInvitationsDialog,
               tooltip: "Sumate a un viaje",
               child: const Icon(Icons.share),
             ),
@@ -162,16 +255,17 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
   }
 }
 
-class _CustomListTile extends StatelessWidget {
+class CustomListTile extends StatelessWidget {
   final TravelMenuItem item;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
 
-  const _CustomListTile({
+  const CustomListTile({
+    Key? key,
     required this.item,
     required this.onDelete,
     required this.onEdit,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +278,10 @@ class _CustomListTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(item.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              item.title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Text("Fecha Inicio: ${item.dateStart}"),
             Text("Fecha Fin: ${item.dateEnd}"),

@@ -24,6 +24,7 @@ dependencies:
   validators: ^3.0.0
   dio: ^5.4.0
   shared_preferences: ^2.5.3
+  fluttertoast: ^8.2.12
 
 dev_dependencies:
   flutter_test:

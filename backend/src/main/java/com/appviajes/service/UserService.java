@@ -1,7 +1,9 @@
 package com.appviajes.service;
 
+import com.appviajes.model.dtos.InvitationDto;
 import com.appviajes.model.dtos.PreferenciasRequest;
 import com.appviajes.model.dtos.RegisterRequest;
+import com.appviajes.model.dtos.TravelDto;
 import com.appviajes.model.entities.Preferences;
 import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelInvitationEntity;
@@ -133,8 +135,8 @@ public class UserService {
         }
     }
 
-    public List<TravelInvitationEntity> getReceivedInvitations(Long userId) {
-  return invitationRepository.findByInvitedId(userId);
+    public List<InvitationDto> getReceivedInvitations(Long userId) {
+  return invitationRepository.findByInvitedId(userId).stream().map(InvitationDto::from).toList();
 }
 
 public List<TravelInvitationEntity> getSentInvitations(Long userId) {
