@@ -205,6 +205,8 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
                 item: item,
                 onDelete: () => _removeItem(item),
                 onEdit: () => context.push("/nuevoViaje"),
+                getRecomendations:
+                    () => context.push("/verRecomendaciones/${item.id}"),
               );
             },
           );
@@ -259,12 +261,14 @@ class CustomListTile extends StatelessWidget {
   final TravelMenuItem item;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
+  final VoidCallback getRecomendations;
 
   const CustomListTile({
     Key? key,
     required this.item,
     required this.onDelete,
     required this.onEdit,
+    required this.getRecomendations,
   }) : super(key: key);
 
   @override
@@ -290,6 +294,11 @@ class CustomListTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                TextButton.icon(
+                  onPressed: getRecomendations,
+                  icon: const Icon(Icons.list, color: Colors.green),
+                  label: const Text("Ver Recomendaciones"),
+                ),
                 TextButton.icon(
                   onPressed: onEdit,
                   icon: const Icon(Icons.edit, color: Colors.blue),
