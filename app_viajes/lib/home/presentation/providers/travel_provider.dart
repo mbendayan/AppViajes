@@ -1,3 +1,4 @@
+import 'package:app_viajes/home/presentation/providers/step_list_provider.dart';
 import 'package:app_viajes/home/presentation/providers/step_provider.dart';
 import 'package:app_viajes/models/step.dart';
 import 'package:app_viajes/models/travel.dart';
@@ -44,10 +45,13 @@ Future<void> createTravel(CreateTravelRequest request, WidgetRef ref) async {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data;
+        print("DATA RECIBIDO: $data");
         final created = CreateTravelResponse.fromJson(data);
 
         // Guardamos las actividades generadas en el provider
        ref.read(generatedStepsProvider.notifier).state = created.steps;
+       ref.read(stepsProvider.notifier).setSteps(created.steps);
+
 
 
         print(ref.read(generatedStepsProvider));

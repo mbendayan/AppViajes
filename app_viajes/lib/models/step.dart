@@ -5,7 +5,7 @@ class Steps {
   final String location;
   final String name;
   final String cost;
-  final String recommendations;
+  final String? recommendations;
 
   Steps({
     required this.id,
@@ -14,11 +14,10 @@ class Steps {
     required this.location,
     required this.name,
     required this.cost,
-    required this.recommendations,
+    this.recommendations,
   });
 
   factory Steps.fromJson(Map<String, dynamic> json) {
-    print("aj");
     return Steps(
       id: json['id'],
       startDate: DateTime.parse(json['startDate']),
