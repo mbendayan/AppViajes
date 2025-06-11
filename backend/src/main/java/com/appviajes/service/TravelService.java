@@ -9,6 +9,7 @@ import com.appviajes.exception.RestException;
 import com.appviajes.model.dtos.CreateTravelRequest;
 import com.appviajes.model.dtos.InviteRequest;
 import com.appviajes.model.dtos.PreferenciasRequest;
+import com.appviajes.model.dtos.TravelRecommendationsDto;
 import com.appviajes.model.dtos.TravelStepRequest;
 
 import com.appviajes.model.dtos.TravelStepsRequest;
@@ -235,7 +236,7 @@ public void updateSteps(Long travelId, List<TravelStepRequest> updatedSteps) {
     travelRepository.save(travel);
 }
 
-public String getRecommendations(Long travelId) {
+public TravelRecommendationsDto getRecommendations(Long travelId) {
     TravelEntity travel = travelRepository.findById(travelId)
             .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
 

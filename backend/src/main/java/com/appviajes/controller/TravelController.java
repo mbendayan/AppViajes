@@ -3,6 +3,7 @@ package com.appviajes.controller;
 import com.appviajes.model.dtos.CreateTravelRequest;
 import com.appviajes.model.dtos.CreateTravelResponse;
 import com.appviajes.model.dtos.InviteRequest;
+import com.appviajes.model.dtos.TravelRecommendationsDto;
 import com.appviajes.model.dtos.TravelStepRequest;
 import com.appviajes.model.dtos.TravelStepsRequest;
 import com.appviajes.model.dtos.TravelUpdateRequest;
@@ -87,12 +88,13 @@ public ResponseEntity<?> updateTravelSteps(
 @GetMapping("/{travelId}/recommendations")
 public ResponseEntity<?> getRecommendations(@PathVariable Long travelId) {
     try {
-        String recommendations = travelService.getRecommendations(travelId);
+        TravelRecommendationsDto recommendations = travelService.getRecommendations(travelId);
         return ResponseEntity.ok(recommendations);
     } catch (RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
+
 
 @PostMapping("/{travelId}/generateSteps")
 public ResponseEntity<?> generateNewSteps (@PathVariable Long travelId){
