@@ -18,23 +18,31 @@ class Steps {
   });
 
   factory Steps.fromJson(Map<String, dynamic> json) {
-    return Steps(
-      id: json['id'],
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
-      location: json['location'],
-      name: json['name'],
-      cost: json['cost'].toString() ,
-      recommendations: json["recommendations"]
-    );
+    try {
+      return Steps(
+        id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? -1,
+        startDate: DateTime.parse(json['start_date'] ?? json['startDate']),
+        endDate: DateTime.parse(json['end_date'] ?? json['endDate']),
+        location: json['location'] ?? '',
+        name: json['name'] ?? '',
+        cost: json['cost']?.toString() ?? '0',
+        recommendations: json['recommendations'],
+      );
+    } catch (e, stack) {
+      print('❌ Error al parsear Steps: $e');
+      print('🔍 JSON problemático: $json');
+      rethrow;
+    }
   }
+
   Map<String, dynamic> toJson() => {
     'id': id,
-    'startDate': startDate.toIso8601String(),
-    'endDate': endDate.toIso8601String(),
+    'start_date': startDate.toIso8601String(),
+    'end_date': endDate.toIso8601String(),
     'location': location,
     'name': name,
     'cost': cost,
     'recommendations': recommendations,
   };
 }
+

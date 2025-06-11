@@ -1,3 +1,4 @@
+import 'package:app_viajes/home/presentation/providers/current_travel_provider.dart';
 import 'package:app_viajes/home/presentation/providers/step_list_provider.dart';
 import 'package:app_viajes/home/presentation/providers/step_provider.dart';
 import 'package:app_viajes/models/step.dart';
@@ -48,6 +49,9 @@ class TravelNotifier extends StateNotifier<AsyncValue<List<Travel>>> {
         // Guardamos las actividades generadas en el provider
         ref.read(generatedStepsProvider.notifier).state = created.steps;
        ref.read(stepsProvider.notifier).setSteps(created.steps);
+       //Guardamos el viaje recien creado
+       ref.read(currentTravelProvider.notifier).state = created;
+
 
       } else {
         throw Exception("Error al crear viaje: ${response.statusCode}");

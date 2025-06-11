@@ -17,15 +17,41 @@ class CreateTravelResponse {
   });
 
   factory CreateTravelResponse.fromJson(Map<String, dynamic> json) {
-    return CreateTravelResponse(
-      id: json['id'],
-      name: json['name'],
-      preferences: json['preferences'],
-      destination: json['destination'],
-      steps: (json['steps'] as List<dynamic>)
-          .map((e) => Steps.fromJson(e))
-          .toList(),
-    );
+    try {
+      final id = json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? -1;
+      final name = json['name'] ?? '';
+      final destination = json['destination'] ?? '';
+      
+      // Si preferences es un Map, lo convertimos a String
+      final preferencesRaw = json['preferences'];
+      final preferences = preferencesRaw is String
+          ? preferencesRaw
+          : preferencesRaw != null
+              ? preferencesRaw.toString()
+              : '';
+
+      final stepsRaw = json['steps'] as List<dynamic>? ?? [];
+      final steps = stepsRaw.map((e) {
+        try {
+          return Steps.fromJson(e);
+        } catch (e) {
+          print("⚠️ Error parseando un Step individual: $e");
+          return null;
+        }
+      }).whereType<Steps>().toList();
+
+      return CreateTravelResponse(
+        id: id,
+        name: name,
+        preferences: preferences,
+        destination: destination,
+        steps: steps,
+      );
+    } catch (e) {
+      print('❌ Error al parsear CreateTravelResponse: $e');
+      print('🔍 JSON problemático: $json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() => {

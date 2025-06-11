@@ -2,12 +2,15 @@
 /*final stepperProvider = StateNotifierProvider<StepperProvider, bool>(
   (ref) => StepperProvider(),
 );*/
+import 'package:app_viajes/home/presentation/providers/current_travel_provider.dart';
 import 'package:app_viajes/home/presentation/providers/step_provider.dart';
 import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
+import 'package:app_viajes/models/travel_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class Step3ActividadScreen extends ConsumerStatefulWidget {
@@ -59,6 +62,7 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    CreateTravelResponse? travel = ref.read(currentTravelProvider);
     final List<Steps> activities = ref.read(generatedStepsProvider);
     final filteredActivities = getFilteredActivities(activities);
     print(activities);
@@ -76,21 +80,15 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
                       onPressed: _selectDate,
                       child: const Text('Filtrar por Fecha'),
                     ),
-                    ElevatedButton(
-                      onPressed:
-                          widget.isViewMode
-                              ? null
-                              : () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => const ActivitiesScreen(
-                                          place: 'Valle Central',
-                                        ),
-                                  ),
-                                );
-                              },
+                  ElevatedButton(
+                      onPressed: widget.isViewMode
+                          ? null
+                          : () {
+                           context.push(
+                           '/activities',
+                           extra: travel, // Esto es un objeto CreateTravelResponse
+                              );
+                            },
                       child: const Text('Agregar Actividad'),
                     ),
                   ],

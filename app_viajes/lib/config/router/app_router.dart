@@ -8,6 +8,7 @@ import 'package:app_viajes/home/presentation/screens/register.dart';
 import 'package:app_viajes/home/presentation/screens/traductor_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
+import 'package:app_viajes/models/travel_response.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_viajes/home/presentation/screens/home_screen.dart';
@@ -78,11 +79,12 @@ final appRouter = GoRouter(
           ),
     ),
     GoRoute(
-      path: '/activities/:place',
-      builder: (BuildContext context, GoRouterState state) {
-        final place = state.pathParameters['place'] ?? '';
-        return ActivitiesScreen(place: place);
-      },
-    ),
+  path: '/activities',
+  builder: (BuildContext context, GoRouterState state) {
+    final travel = state.extra as CreateTravelResponse;
+    return ActivitiesScreen(travel: travel);
+  },
+),
+
   ],
 );
