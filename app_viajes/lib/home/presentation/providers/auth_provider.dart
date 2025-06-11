@@ -31,60 +31,51 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   }
 
   Future<String> login(String email, String password) async {
-  state = const AsyncValue.loading();
-  try {
-    final response = await _dio.post('/api/users/login', data: {
-      'email': email,
-      'password': password,
-    });
+    state = const AsyncValue.loading();
+    try {
+      final response = await _dio.post(
+        '/api/users/login',
+        data: {'email': email, 'password': password},
+      );
 
-    
-    final user = User.fromJson(response.data);
+      final user = User.fromJson(response.data);
 
+      state = AsyncValue.data(user);
 
-    
-
-    state = AsyncValue.data(user);
-     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('userId', user.id);
-    await prefs.setString('userEmail', user.email);
-    return 'success';
-  } catch (e, st) {
-    state = AsyncValue.error(e, st);
-    return 'Error al iniciar sesión: ${_parseError(e)}';
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('userId', user.id);
+      await prefs.setString('userEmail', user.email);
+      return 'success';
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      return 'Error al iniciar sesión: ${_parseError(e)}';
+    }
   }
-}
 
-Future<String> register(String email, String password) async {
-  state = const AsyncValue.loading();
-  try {
-    final response = await _dio.post('/api/users/register', data: {
-      'email': email,
-      'password': password,
-    });
+  Future<String> register(String email, String password) async {
+    state = const AsyncValue.loading();
+    try {
+      final response = await _dio.post(
+        '/api/users/register',
+        data: {'email': email, 'password': password},
+      );
 
-  
-    final user = User.fromJson(response.data['user']);
+      final user = User.fromJson(response.data['user']);
 
-  
-
-    state = AsyncValue.data(user);
-    return 'success';
-  } catch (e, st) {
-    state = AsyncValue.error(e, st);
-    return 'Error al registrarse: ${_parseError(e)}';
+      state = AsyncValue.data(user);
+      return 'success';
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      return 'Error al registrarse: ${_parseError(e)}';
+    }
   }
-}
 
-
-
-
-String? _parseError(Object error) {
-  if (error is DioException) {
-    return error.response?.data.toString() ?? error.message;
+  String? _parseError(Object error) {
+    if (error is DioException) {
+      return error.response?.data.toString() ?? error.message;
+    }
+    return error.toString();
   }
-  return error.toString();
-}
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();

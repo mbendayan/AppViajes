@@ -15,15 +15,7 @@ class LoginScreen2 extends ConsumerWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final userProvider = StateNotifierProvider<UserNotifier, User>(
-    (ref) => UserNotifier(
-      User(
-        username: '',
-        id: 0,
-        email: '',
-        password: '',
-        
-      ),
-    ),
+    (ref) => UserNotifier(User(username: '', id: 0, email: '', password: '')),
   );
 
   @override
