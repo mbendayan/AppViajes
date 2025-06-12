@@ -5,6 +5,7 @@ import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
 import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
 import 'package:app_viajes/home/presentation/screens/Step3_actividad_screen.dart';
 import 'package:app_viajes/home/presentation/screens/step2_preferences_screen.dart';
+import 'package:app_viajes/models/trave_menu_item.dart';
 import 'package:app_viajes/models/travel_request.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,9 +14,14 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ABMViajeScreen extends ConsumerStatefulWidget {
-  final bool isViewMode; // Nuevo parámetro para el modo visualizar
+  final bool isViewMode;
+  final bool isEditMode;
 
-  const ABMViajeScreen({super.key, this.isViewMode = false});
+  const ABMViajeScreen({
+    super.key,
+    this.isViewMode = false,
+    this.isEditMode = false,
+  });
 
   @override
   ConsumerState<ABMViajeScreen> createState() => _ABMViajeScreenState();
@@ -41,7 +47,6 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Mostrar Toast de éxito
         Fluttertoast.showToast(
           msg: "Invitación enviada con éxito",
           toastLength: Toast.LENGTH_SHORT,
@@ -51,12 +56,11 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
           fontSize: 16.0,
         );
 
-        Navigator.pop(context); // Cerrar el diálogo
+        Navigator.pop(context);
       } else {
         throw Exception("Error al enviar la invitación: ${response.body}");
       }
     } catch (error) {
-      // Mostrar mensaje de error
       Fluttertoast.showToast(
         msg: "Error: $error",
         toastLength: Toast.LENGTH_LONG,
@@ -190,65 +194,65 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
       floatingActionButton: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned(
-            bottom: 80,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String? email;
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: const Text("Invitar a un usuario"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            decoration: const InputDecoration(
-                              labelText: "Email de usuario a invitar",
-                              border: OutlineInputBorder(),
+          if (widget.isEditMode)
+            Positioned(
+              bottom: 80,
+              right: 16,
+              child: FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      String? email;
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        title: const Text("Invitar a un usuario"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              decoration: const InputDecoration(
+                                labelText: "Email de usuario a invitar",
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) {
+                                email = value;
+                              },
                             ),
-                            onChanged: (value) {
-                              email = value;
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("Cancelar"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (email != null && email!.isNotEmpty) {
+                                await sendInvitation(1, email!);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Por favor, ingresa un email válido",
+                                    ),
+                                  ),
+                                );
+                              }
                             },
+                            child: const Text("Invitar"),
                           ),
                         ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("Cancelar"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (email != null && email!.isNotEmpty) {
-                              // Llamada a la función para invitar al usuario
-                              await sendInvitation(1, email!);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "Por favor, ingresa un email válido",
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text("Invitar"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              tooltip: "Sumate a un viaje",
-              child: const Icon(Icons.share),
+                      );
+                    },
+                  );
+                },
+                tooltip: "Sumate a un viaje",
+                child: const Icon(Icons.share),
+              ),
             ),
-          ),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -74,7 +75,11 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
     }
   }
 
-  Future<void> respondToInvitation(int invitationId, String response) async {
+  Future<void> respondToInvitation(
+    int invitationId,
+    String response,
+    BuildContext dialogContext, // para cerrar el diálogo
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userId = prefs.getInt('userId');
@@ -84,19 +89,38 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
       );
 
       final body = jsonEncode({'response': response});
-
       final headers = {'Content-Type': 'application/json'};
 
       final httpResponse = await http.post(url, body: body, headers: headers);
 
       if (httpResponse.statusCode == 200) {
-        // Refresh the invitations list
-        await fetchInvitations();
+        Fluttertoast.showToast(
+          msg:
+              response == "ACCEPTED"
+                  ? "Invitación aceptada correctamente"
+                  : "Invitación rechazada",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+
+        Navigator.of(dialogContext).pop(); // ❗Cerrar el diálogo
+
+        await fetchInvitations(); // Actualizar invitaciones
+
+        // 🔄 Recargar viajes después de aceptar
+        if (response == "ACCEPTED" && userId != null) {
+          await ref.read(travelProvider.notifier).fetchUserTravels(userId);
+        }
       } else {
-        throw Exception("Failed to respond to invitation");
+        throw Exception("Error al responder la invitación");
       }
     } catch (error) {
-      debugPrint("Error responding to invitation: $error");
+      Fluttertoast.showToast(
+        msg: "Error al procesar la invitación",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+      );
+      debugPrint("Error al responder la invitación: $error");
     }
   }
 
@@ -146,6 +170,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
                                               () => respondToInvitation(
                                                 invitation['id'],
                                                 "ACCEPTED",
+                                                context,
                                               ),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.green,
@@ -158,6 +183,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
                                               () => respondToInvitation(
                                                 invitation['id'],
                                                 "REJECTED",
+                                                context,
                                               ),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.red,
@@ -204,7 +230,11 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
               return CustomListTile(
                 item: item,
                 onDelete: () => _removeItem(item),
-                onEdit: () => context.push("/nuevoViaje"),
+                onEdit:
+                    () => context.push(
+                      "/nuevoViaje",
+                      extra: {'isEditMode': true},
+                    ),
                 getRecomendations:
                     () => context.push("/verRecomendaciones/${item.id}"),
               );

@@ -48,7 +48,11 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final isViewMode =
             state.extra != null && (state.extra as Map)['isViewMode'] == true;
-        return ABMViajeScreen(isViewMode: isViewMode);
+
+        final isEditMode =
+            state.extra != null && (state.extra as Map)['isEditMode'] == true;
+
+        return ABMViajeScreen(isViewMode: isViewMode, isEditMode: isEditMode);
       },
     ),
     GoRoute(
