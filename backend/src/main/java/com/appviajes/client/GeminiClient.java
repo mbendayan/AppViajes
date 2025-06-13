@@ -5,9 +5,12 @@ import static java.time.LocalDateTime.parse;
 
 import com.appviajes.client.apis.GeminiApi;
 import com.appviajes.model.dtos.GeminiPromptRequest;
+import com.appviajes.model.dtos.TravelRecommendationsDto;
 import com.appviajes.model.entities.Preferences;
 import com.appviajes.model.entities.TravelEntity;
 import com.appviajes.model.entities.TravelStepEntity;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,16 +57,36 @@ public class GeminiClient implements AIClient {
     }
   }
 
-  public String generateRecommendations(TravelEntity travel) {
+public TravelRecommendationsDto generateRecommendations(TravelEntity travel) {
     String prompt = buildRecommendationPrompt(travel);
     var response = geminiApi.generateContent(new GeminiPromptRequest(prompt));
+
     if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) {
-      return sanitize(response.getBody().getResponse());
+        String json = sanitize(response.getBody().getResponse());
+        JSONObject jsonObject = new JSONObject(json);
+
+        TravelRecommendationsDto dto = new TravelRecommendationsDto();
+        dto.setTemperature(jsonObject.getString("temperature"));
+        dto.setClothing(jsonArrayToList(jsonObject.getJSONArray("clothing")));
+        dto.setEssentials(jsonArrayToList(jsonObject.getJSONArray("essentials")));
+        dto.setTransport(jsonArrayToList(jsonObject.getJSONArray("transport")));
+        dto.setActivities(jsonArrayToList(jsonObject.getJSONArray("activities")));
+        dto.setGastronomy(jsonArrayToList(jsonObject.getJSONArray("gastronomy")));
+
+        return dto;
     } else {
-      log.error("Error generando recomendaciones con Gemini.");
-      throw new RuntimeException("Error al obtener recomendaciones del viaje");
+        log.error("Error generando recomendaciones con Gemini.");
+        throw new RuntimeException("Error al obtener recomendaciones del viaje");
     }
-  }
+}
+
+private List<String> jsonArrayToList(JSONArray array) {
+    List<String> list = new ArrayList<>();
+    for (int i = 0; i < array.length(); i++) {
+        list.add(array.getString(i));
+    }
+    return list;
+}
 
   private List<TravelStepEntity> buildTravelStepEntity(JSONArray steps) {
     List<TravelStepEntity> stepsList = new LinkedList<>();
@@ -133,26 +156,33 @@ public class GeminiClient implements AIClient {
   }
   private String buildRecommendationPrompt(TravelEntity travel) {
     return """
-        Necesito que generes una serie de recomendaciones para un viaje a {destination}, desde {startDate} hasta {endDate}.
+      Necesito una lista de recomendaciones para un viaje a {destination}, desde {startDate} hasta {endDate}. Las recomendaciones deben organizarse en las siguientes secciones, cada una como una lista de frases independientes en formato JSON. No incluyas explicaciones adicionales, solo el JSON con estas claves:
 
-        Quiero que las recomendaciones estén organizadas por secciones claras, con títulos destacados. Deben estar redactadas en tono amigable, como si le hablaras a un viajero.
+{
+  "clothing": [ ... ],
+  "essentials": [ ... ],
+  "transport": [ ... ],
+  "activities": [ ... ],
+  "gastronomy": [ ... ],
+  "temperature": "Texto breve indicando el rango de temperatura estimado entre {startDate} hasta {endDate}"
+}
 
-        Las secciones que quiero son:
+Cada sección debe incluir recomendaciones específicas, por ejemplo:
 
-        1. Ropa adecuada: según el clima estimado en ese lugar y fechas, recomendaciones de abrigo, ropa liviana, impermeable, etc. Especificar si va a llover.
-        2. Elementos útiles: paraguas, protector solar, adaptadores para enchufes.
-        3. Transporte: Apps de transporte y cómo funciona el transporte público (por ejemplo, si hay SUBE en Buenos Aires, Oyster en Londres, etc.)
-        4. Actividades recomendadas: eventos que ocurran en las fechas del viaje o actividades de interes para turistas.
-        5. Gastronomía local recomendada: platos típicos, restaurantes bien puntuados, y opciones de restaurantes bien puntuados que sirvan comida sin tacc, vegetariana y vegana.
+- **clothing**: qué tipo de ropa usar según el clima (frío, calor, lluvia).
+- **essentials**: paraguas, adaptadores de enchufe, protector solar, etc.
+- **transport**: si se usa transporte público o apps como Uber, subte, etc.
+- **activities**: excursiones o eventos destacados en esas fechas.
+- **gastronomy**: platos típicos, lugares populares y opciones sin TACC, veganas o vegetarianas.
 
-        No incluyas recomendaciones médicas ni de salud ni vacunas.
+Solo respondé el objeto JSON como está estructurado arriba.
 
-        Escribí las recomendaciones como si fueran parte de una guía de viaje personalizada para un usuario real.
+        Escribí en tono amigable y directo, como si le hablaras a un viajero.
         """
         .replace("{destination}", travel.getDestination())
         .replace("{startDate}", travel.getStartDate().toLocalDate().toString())
         .replace("{endDate}", travel.getEndDate().toLocalDate().toString());
-  }
+}
 
   private String sanitize(String response) {
     return response

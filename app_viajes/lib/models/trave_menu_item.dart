@@ -1,16 +1,18 @@
 import 'package:app_viajes/models/travel.dart';
 
 class TravelMenuItem {
-  final String title ;
+  final String title;
   final String destination;
   final DateTime? dateStart;
   final DateTime? dateEnd;
+  final int? id;
 
   const TravelMenuItem({
-     this.title = "",
-     this.destination = "",
-     this.dateStart,
-     this.dateEnd,
+    this.id = 0,
+    this.title = "",
+    this.destination = "",
+    this.dateStart,
+    this.dateEnd,
   });
 
   factory TravelMenuItem.fromTravel(Travel travel) {
@@ -19,10 +21,9 @@ class TravelMenuItem {
       destination: travel.destination,
       dateStart: travel.startDate,
       dateEnd: travel.endDate,
+      id: travel.id,
     );
   }
-
-
 
   factory TravelMenuItem.fromJson(Map<String, dynamic> json) {
     return TravelMenuItem(
@@ -30,6 +31,7 @@ class TravelMenuItem {
       destination: json['destination'] ?? '',
       dateStart: DateTime.parse(json['startDate']),
       dateEnd: DateTime.parse(json['endDate']),
+      id: json['id'] ?? 0,
     );
   }
 }
