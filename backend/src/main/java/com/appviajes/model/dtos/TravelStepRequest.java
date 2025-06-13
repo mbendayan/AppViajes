@@ -14,6 +14,6 @@ public class TravelStepRequest {
     private String location;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private BigDecimal cost;
+    private String cost;
     private String recommendations;
 }

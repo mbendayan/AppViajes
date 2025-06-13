@@ -74,10 +74,10 @@ public ResponseEntity<?> updateTravel(@PathVariable Long travelId, @RequestBody 
 @PutMapping("/{travelId}/steps")
 public ResponseEntity<?> updateTravelSteps(
     @PathVariable Long travelId,
-    @RequestBody UpdateStepsRequest request
+    @RequestBody List<TravelStepRequest> steps
 ) {
     try {
-        travelService.updateSteps(travelId, request.getSteps());
+        travelService.updateSteps(travelId, steps);
         return ResponseEntity.ok("Steps actualizados correctamente");
     } catch (RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

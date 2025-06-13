@@ -29,6 +29,7 @@ import com.appviajes.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,7 +103,7 @@ private final GeminiClient geminiClient;
         step.getLocation(),
         step.getStartDate(),
         step.getEndDate(),
-        step.getCost(),
+        step.getCost().toString(),
         step.getRecommendations()
     );
 }
@@ -119,7 +120,7 @@ public TravelStepsRequest getTravelStepsById(Long id) {
             step.getLocation(),
             step.getStartDate(),
             step.getEndDate(),
-            step.getCost(),
+            step.getCost().toString(),
             step.getRecommendations()
         ))
         .collect(Collectors.toList());
@@ -216,6 +217,7 @@ public void updateSteps(Long travelId, List<TravelStepRequest> updatedSteps) {
 
     // Limpiar steps actuales
     travel.getSteps().clear();
+    travelRepository.save(travel);
 
     // Mapear los nuevos steps
     List<TravelStepEntity> newSteps = updatedSteps.stream().map(stepDto -> {
@@ -225,14 +227,22 @@ public void updateSteps(Long travelId, List<TravelStepRequest> updatedSteps) {
         step.setLocation(stepDto.getLocation());
         step.setStartDate(stepDto.getStartDate());
         step.setEndDate(stepDto.getEndDate());
-        step.setCost(stepDto.getCost());
+        step.setCost(BigDecimal.valueOf(Long.valueOf( stepDto.getCost())));
         step.setRecommendations(stepDto.getRecommendations());
         return step;
     }).toList();
 
     // Reemplazar steps
     travel.setSteps(newSteps);
-    travelRepository.save(travel);
+    this.travelStepRepository.saveAll(newSteps);
+    try {
+        travelRepository.save(travel);
+    }
+    catch (Exception e){
+        log.error(e.getMessage());
+    }
+
+
 }
 
 public String getRecommendations(Long travelId) {
@@ -247,8 +257,6 @@ public List<TravelStepEntity> generateNewSteps(Long travelId){
     .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
     
     List<TravelStepEntity> newSteps = geminiClient.generateNewTravelSteps(travel);
-    travel.setSteps(newSteps);
-    travelRepository.save(travel);
     return newSteps;
 
 }

@@ -47,7 +47,7 @@ class TravelNotifier extends StateNotifier<AsyncValue<List<Travel>>> {
         final created = CreateTravelResponse.fromJson(data);
 
         // Guardamos las actividades generadas en el provider
-        ref.read(generatedStepsProvider.notifier).state = created.steps;
+       ref.read(generatedStepsProvider.notifier).setSteps(created.steps);
        ref.read(stepsProvider.notifier).setSteps(created.steps);
        //Guardamos el viaje recien creado
        ref.read(currentTravelProvider.notifier).state = created;

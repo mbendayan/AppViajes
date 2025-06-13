@@ -1,7 +1,6 @@
 
 import 'package:app_viajes/home/presentation/providers/new_steps_provider.dart';
-import 'package:app_viajes/home/presentation/providers/step_list_provider.dart';
-import 'package:app_viajes/models/step.dart';
+import 'package:app_viajes/home/presentation/providers/step_provider.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/travel_response.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,8 @@ class ActivitiesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncActivities = ref.watch(newStepsProvider(travel.id));
+    final generatedSteps = ref.watch(generatedStepsProvider);
+    final generatedNotifier = ref.read(generatedStepsProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: Text('Actividades en ${travel.destination}')),
@@ -37,6 +38,8 @@ class ActivitiesScreen extends ConsumerWidget {
                   itemCount: activities.length,
                   itemBuilder: (context, index) {
                     final activity = activities[index];
+                    final alreadyAdded = generatedSteps.any((s) => s.id == activity.id);
+
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
@@ -47,19 +50,38 @@ class ActivitiesScreen extends ConsumerWidget {
                             Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
                             Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
                             Text('Costo: ${activity.cost} USD'),
-                            Text('Recomendaciones: ${activity.recommendations}'),
+                            if (activity.recommendations != null)
+                              Text('Recomendaciones: ${activity.recommendations}'),
                           ],
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.remove_red_eye),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VerActividadScreen(activity: activity),
+                        trailing: Column(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                alreadyAdded ? Icons.check_circle : Icons.add_circle_outline,
+                                color: alreadyAdded ? Colors.green : null,
                               ),
-                            );
-                          },
+                              onPressed: alreadyAdded
+                                  ? null
+                                  : () {
+                                      generatedNotifier.addStep(activity);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('${activity.name} agregada al viaje')),
+                                      );
+                                    },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.remove_red_eye),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VerActividadScreen(activity: activity),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     );

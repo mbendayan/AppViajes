@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_viajes/home/presentation/providers/save_travel_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
 import 'package:app_viajes/home/presentation/screens/step1_viaje_screen.dart';
@@ -9,6 +10,7 @@ import 'package:app_viajes/models/travel_request.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -120,8 +122,22 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                 )
               else
                 ElevatedButton(
-                  onPressed: () {
-                    // Lógica para guardar
+                  onPressed: () async {
+                    try {
+                      await ref.read(saveTravelProvider.notifier).save();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Viaje guardado con éxito")),
+                        );
+                        context.push("/home"); // o lo que necesites
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error: $e")),
+                        );
+                      }
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -129,6 +145,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                   ),
                   child: const Text('Guardar'),
                 ),
+
               if (_currentStep > 0)
                 TextButton(
                   onPressed: details.onStepCancel,

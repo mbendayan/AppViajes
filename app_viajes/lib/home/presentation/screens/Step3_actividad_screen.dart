@@ -4,17 +4,15 @@
 );*/
 import 'package:app_viajes/home/presentation/providers/current_travel_provider.dart';
 import 'package:app_viajes/home/presentation/providers/step_provider.dart';
-import 'package:app_viajes/home/presentation/screens/activities_screen.dart';
 import 'package:app_viajes/home/presentation/screens/ver_actividad_screen.dart';
 import 'package:app_viajes/models/step.dart';
-import 'package:app_viajes/models/travel_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class Step3ActividadScreen extends ConsumerStatefulWidget {
-  final bool isViewMode; // Nuevo parámetro para modo visualizar
+  final bool isViewMode;
 
   const Step3ActividadScreen({super.key, this.isViewMode = false});
 
@@ -54,19 +52,17 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    final List<Steps> activities = ref.read(generatedStepsProvider);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    CreateTravelResponse? travel = ref.read(currentTravelProvider);
-    final List<Steps> activities = ref.read(generatedStepsProvider);
-    final filteredActivities = getFilteredActivities(activities);
-    print(activities);
+    final travel = ref.watch(currentTravelProvider);
+    final activities = ref.watch(generatedStepsProvider);
+    final generatedStepsNotifier = ref.read(generatedStepsProvider.notifier);
+
+    // Ordenamos por fecha
+    final sortedActivities = [...activities]..sort((a, b) => a.startDate.compareTo(b.startDate));
+    final filteredActivities = getFilteredActivities(sortedActivities);
+
     return Scaffold(
+      appBar: AppBar(title: const Text('Actividades del viaje')),
       body: Column(
         children: [
           Padding(
@@ -80,14 +76,11 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
                       onPressed: _selectDate,
                       child: const Text('Filtrar por Fecha'),
                     ),
-                  ElevatedButton(
+                    ElevatedButton(
                       onPressed: widget.isViewMode
                           ? null
                           : () {
-                           context.push(
-                           '/activities',
-                           extra: travel, // Esto es un objeto CreateTravelResponse
-                              );
+                              context.push('/activities', extra: travel);
                             },
                       child: const Text('Agregar Actividad'),
                     ),
@@ -98,48 +91,67 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       'Fecha seleccionada: ${DateFormat('dd/MM/yyyy').format(selectedDate!)}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
               ],
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: filteredActivities.length,
-              itemBuilder: (context, index) {
-                final activity = filteredActivities[index];
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text(activity.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
-                        Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
-                        Text('Costo: ${activity.cost} "USD"'),
-                        Text('Recomendaciones: ${activity.recommendations}'),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.remove_red_eye),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VerActividadScreen(activity: activity),
+            child: filteredActivities.isEmpty
+                ? const Center(child: Text('No hay actividades para mostrar.'))
+                : ListView.builder(
+                    itemCount: filteredActivities.length,
+                    itemBuilder: (context, index) {
+                      final activity = filteredActivities[index];
+                      return Card(
+                        margin: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: Text(activity.name),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
+                              Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
+                              Text('Lugar: ${activity.location}'),
+                              Text('Costo: ${activity.cost} USD'),
+                              if (activity.recommendations != null)
+                                Text('Recomendaciones: ${activity.recommendations}'),
+                            ],
                           ),
-                        );
-                      },
-                    ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.remove_red_eye),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => VerActividadScreen(activity: activity),
+                                    ),
+                                  );
+                                },
+                              ),
+                              if (!widget.isViewMode)
+                                IconButton(
+                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () {
+                                    generatedStepsNotifier.state = [
+                                      ...generatedStepsNotifier.state
+                                          .where((step) => step.id != activity.id)
+                                    ];
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Actividad "${activity.name}" eliminada.')),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
