@@ -1,7 +1,9 @@
 import 'package:app_viajes/home/presentation/providers/stepper_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
+import 'package:app_viajes/home/presentation/utility/autocomplete_destino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 /*final stepperProvider = StateNotifierProvider<StepperProvider, bool>(
   (ref) => StepperProvider(),
@@ -29,6 +31,8 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
   DateTime? _fechaInicio;
   DateTime? _fechaFin;
 
+  
+
   Future<void> _selectFecha(BuildContext context, bool esInicio) async {
      if (widget.isViewMode) return;
     final picked = await showDatePicker(
@@ -50,6 +54,7 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
     }
   }
 
+  
 
 
   @override
@@ -76,18 +81,11 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
                             ? "Campo requerido"
                             : null,
               ),
-              TextFormField(
+              DestinoAutocompleteField(
                 controller: _destinoController,
-                decoration: const InputDecoration(labelText: "Destino"),
-                 onChanged: (value) {
+                onChanged: (value) {
                   ref.read(travelFormProvider.notifier).updateForm2(destination: value);
                 },
-                readOnly: widget.isViewMode,
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty
-                            ? "Campo requerido"
-                            : null,
               ),
               const SizedBox(height: 10),
               Row(
