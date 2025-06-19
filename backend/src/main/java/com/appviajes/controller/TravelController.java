@@ -3,6 +3,7 @@ package com.appviajes.controller;
 import com.appviajes.model.dtos.CreateTravelRequest;
 import com.appviajes.model.dtos.CreateTravelResponse;
 import com.appviajes.model.dtos.InviteRequest;
+import com.appviajes.model.dtos.TravelRecommendationsDto;
 import com.appviajes.model.dtos.TravelStepRequest;
 import com.appviajes.model.dtos.TravelStepsRequest;
 import com.appviajes.model.dtos.TravelUpdateRequest;
@@ -74,10 +75,10 @@ public ResponseEntity<?> updateTravel(@PathVariable Long travelId, @RequestBody 
 @PutMapping("/{travelId}/steps")
 public ResponseEntity<?> updateTravelSteps(
     @PathVariable Long travelId,
-    @RequestBody UpdateStepsRequest request
+    @RequestBody List<TravelStepRequest> steps
 ) {
     try {
-        travelService.updateSteps(travelId, request.getSteps());
+        travelService.updateSteps(travelId, steps);
         return ResponseEntity.ok("Steps actualizados correctamente");
     } catch (RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -87,12 +88,13 @@ public ResponseEntity<?> updateTravelSteps(
 @GetMapping("/{travelId}/recommendations")
 public ResponseEntity<?> getRecommendations(@PathVariable Long travelId) {
     try {
-        String recommendations = travelService.getRecommendations(travelId);
+        TravelRecommendationsDto recommendations = travelService.getRecommendations(travelId);
         return ResponseEntity.ok(recommendations);
     } catch (RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
+
 
 @PostMapping("/{travelId}/generateSteps")
 public ResponseEntity<?> generateNewSteps (@PathVariable Long travelId){
@@ -101,5 +103,14 @@ public ResponseEntity<?> generateNewSteps (@PathVariable Long travelId){
 }
 
 
+@DeleteMapping("/{travelId}/deleteTravel/{userId}")
+public ResponseEntity<?> clearUserPreferences(@PathVariable Long travelId,@PathVariable Long userId) {
+	try {
+	    travelService.deleteTravel(travelId,userId);
+	    return ResponseEntity.ok("Viaje eliminado correctamente");
+	} catch (RuntimeException e) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	}
+}
 
 }

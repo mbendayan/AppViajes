@@ -132,8 +132,8 @@ public ResponseEntity<?> respondToInvitation(@PathVariable Long userId, @PathVar
     }
 }
 @GetMapping("/{userId}/invitations/received")
-public ResponseEntity<List<TravelInvitationEntity>> getReceivedInvitations(@PathVariable Long userId) {
-    List<TravelInvitationEntity> invitations = userService.getReceivedInvitations(userId);
+public ResponseEntity<List<InvitationDto>> getReceivedInvitations(@PathVariable Long userId) {
+    List<InvitationDto> invitations = userService.getReceivedInvitations(userId);
     return ResponseEntity.ok(invitations);
 }
 

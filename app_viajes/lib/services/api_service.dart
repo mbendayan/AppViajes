@@ -56,4 +56,33 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
   }
+
+  Future<void> saveTravelToUser(int userId, int travelId) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+
+  final response = await _dio.post(
+    '/api/users/$userId/savetravel/$travelId',
+    options: Options(headers: {'Authorization': 'Bearer $token'}),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception("Error al guardar viaje: ${response.data}");
+  }
+}
+
+Future<void> updateTravelSteps(int travelId, List<Map<String, dynamic>> steps) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+
+  final response = await _dio.put(
+    '/travels/$travelId/steps',
+    data: {'steps': steps},
+    options: Options(headers: {'Authorization': 'Bearer $token'}),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception("Error al actualizar actividades: ${response.data}");
+  }
+}
 }

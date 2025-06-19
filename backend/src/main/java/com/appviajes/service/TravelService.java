@@ -9,6 +9,7 @@ import com.appviajes.exception.RestException;
 import com.appviajes.model.dtos.CreateTravelRequest;
 import com.appviajes.model.dtos.InviteRequest;
 import com.appviajes.model.dtos.PreferenciasRequest;
+import com.appviajes.model.dtos.TravelRecommendationsDto;
 import com.appviajes.model.dtos.TravelStepRequest;
 
 import com.appviajes.model.dtos.TravelStepsRequest;
@@ -29,7 +30,9 @@ import com.appviajes.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,7 +105,7 @@ private final GeminiClient geminiClient;
         step.getLocation(),
         step.getStartDate(),
         step.getEndDate(),
-        step.getCost(),
+        step.getCost().toString(),
         step.getRecommendations()
     );
 }
@@ -119,7 +122,7 @@ public TravelStepsRequest getTravelStepsById(Long id) {
             step.getLocation(),
             step.getStartDate(),
             step.getEndDate(),
-            step.getCost(),
+            step.getCost().toString(),
             step.getRecommendations()
         ))
         .collect(Collectors.toList());
@@ -194,18 +197,18 @@ public void updateTravel(Long travelId, TravelUpdateRequest request) {
     existingTravel.setEndDate(request.getEndDate());
 
     if (request.getPreferences() != null) {
-        Preferences preferences = existingTravel.getPreferences();
+        String preferences = existingTravel.getPreferences();
         if (preferences == null) {
-            preferences = new Preferences();
+            preferences = "";
         }
-
+        /*
         preferences.setPresupuesto(PresupuestoEnum.valueOf(request.getPreferences().getPresupuesto()));
         preferences.setMontoPersonalizado(request.getPreferences().getMontoPersonalizado());
         preferences.setTipoViaje(TipoViajeEnum.valueOf(request.getPreferences().getTipoViaje()));
         preferences.setTipoAlojamiento(TipoAlojamientoEnum.valueOf(request.getPreferences().getTipoAlojamiento()));
         preferences.setTipoTransporte(TipoTransporteEnum.valueOf(request.getPreferences().getTipoTransporte()));
 
-        existingTravel.setPreferences(preferences);
+        existingTravel.setPreferences(preferences);*/
     }
 
     travelRepository.save(existingTravel);
@@ -216,6 +219,7 @@ public void updateSteps(Long travelId, List<TravelStepRequest> updatedSteps) {
 
     // Limpiar steps actuales
     travel.getSteps().clear();
+    travelRepository.save(travel);
 
     // Mapear los nuevos steps
     List<TravelStepEntity> newSteps = updatedSteps.stream().map(stepDto -> {
@@ -225,17 +229,25 @@ public void updateSteps(Long travelId, List<TravelStepRequest> updatedSteps) {
         step.setLocation(stepDto.getLocation());
         step.setStartDate(stepDto.getStartDate());
         step.setEndDate(stepDto.getEndDate());
-        step.setCost(stepDto.getCost());
+        step.setCost(BigDecimal.valueOf(Long.valueOf( stepDto.getCost())));
         step.setRecommendations(stepDto.getRecommendations());
         return step;
     }).toList();
 
     // Reemplazar steps
     travel.setSteps(newSteps);
-    travelRepository.save(travel);
+    this.travelStepRepository.saveAll(newSteps);
+    try {
+        travelRepository.save(travel);
+    }
+    catch (Exception e){
+        log.error(e.getMessage());
+    }
+
+
 }
 
-public String getRecommendations(Long travelId) {
+public TravelRecommendationsDto getRecommendations(Long travelId) {
     TravelEntity travel = travelRepository.findById(travelId)
             .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
 
@@ -247,10 +259,27 @@ public List<TravelStepEntity> generateNewSteps(Long travelId){
     .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
     
     List<TravelStepEntity> newSteps = geminiClient.generateNewTravelSteps(travel);
-    travel.setSteps(newSteps);
-    travelRepository.save(travel);
     return newSteps;
 
 }
+
+public void deleteTravel(Long travelId, Long userId) {
+    try {
+        UserEntity u = this.userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        
+        List<TravelEntity> updatedTravels = new ArrayList<>(
+            u.getTravels()
+                .stream()
+                .filter(trav -> trav.getId() != travelId)
+                .toList()
+        );
+        
+        u.setTravels(updatedTravels);
+        userRepository.save(u);
+    } catch (Exception e) {
+        log.error(e.getMessage(), e);
+    }
+}
+
 
 }

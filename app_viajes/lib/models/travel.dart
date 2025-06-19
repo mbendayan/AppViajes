@@ -12,29 +12,46 @@ class Travel {
   final List<Steps>? steps;
 
   Travel({
-     this.id,
-     required this.name,
-     this.preferences,
-     required this.destination,
-     this.creationDate,
-     this.startDate,
-     this.endDate,
-     this.steps,
+    this.id,
+    required this.name,
+    this.preferences,
+    required this.destination,
+    this.creationDate,
+    this.startDate,
+    this.endDate,
+    this.steps,
   });
 
   factory Travel.fromJson(Map<String, dynamic> json) {
-    print("as");
+    if (json['name'] == null || json['name'] is! String) {
+      throw FormatException("Missing or invalid 'name' field");
+    }
+    if (json['destination'] == null || json['destination'] is! String) {
+      throw FormatException("Missing or invalid 'destination' field");
+    }
+
     return Travel(
       id: json['id'],
       name: json['name'],
       preferences: json['preferences'],
       destination: json['destination'],
-      creationDate: DateTime.parse(json['creationDate']),
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
-      steps: (json['steps'] as List)
-          .map((e) => Steps.fromJson(e))
-         .toList(),
+      creationDate: json['creationDate'] != null
+          ? DateTime.tryParse(json['creationDate']) ??
+              (throw FormatException("Invalid 'creationDate' format"))
+          : null,
+      startDate: json['startDate'] != null
+          ? DateTime.tryParse(json['startDate']) ??
+              (throw FormatException("Invalid 'startDate' format"))
+          : null,
+      endDate: json['endDate'] != null
+          ? DateTime.tryParse(json['endDate']) ??
+              (throw FormatException("Invalid 'endDate' format"))
+          : null,
+      steps: json['steps'] != null
+          ? (json['steps'] as List)
+              .map((e) => Steps.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
     );
   }
 

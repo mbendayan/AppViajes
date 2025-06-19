@@ -21,7 +21,8 @@ public class UserEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "preferencias_id", referencedColumnName = "id")
     private Preferences preferencias;
-    @ManyToMany
+    
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "user_saved_travels",
         joinColumns = @JoinColumn(name = "user_id"),
