@@ -1,12 +1,13 @@
 name: app_viajes
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
   sdk: ^3.7.2
 
 dependencies:
+  flutter_svg: ^2.0.9
   carousel_indicator: ^1.0.6
   carousel_slider: ^5.0.0
   flutter:
@@ -28,14 +29,15 @@ dependencies:
   flutter_typeahead: ^4.3.8
   flutter_keyboard_visibility: 5.4.1
 
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   build_runner: ^2.4.8
   json_serializable: ^6.8.0
+
+assets:
+  - assets/flags/
 
 flutter:
   uses-material-design: true

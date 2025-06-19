@@ -32,6 +32,7 @@ import jakarta.transaction.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -261,5 +262,24 @@ public List<TravelStepEntity> generateNewSteps(Long travelId){
     return newSteps;
 
 }
+
+public void deleteTravel(Long travelId, Long userId) {
+    try {
+        UserEntity u = this.userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        
+        List<TravelEntity> updatedTravels = new ArrayList<>(
+            u.getTravels()
+                .stream()
+                .filter(trav -> trav.getId() != travelId)
+                .toList()
+        );
+        
+        u.setTravels(updatedTravels);
+        userRepository.save(u);
+    } catch (Exception e) {
+        log.error(e.getMessage(), e);
+    }
+}
+
 
 }

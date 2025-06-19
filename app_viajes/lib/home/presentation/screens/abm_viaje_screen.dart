@@ -32,6 +32,7 @@ class ABMViajeScreen extends ConsumerStatefulWidget {
 class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
   int _currentStep = 0;
   bool _preferencesSaved = false;
+  bool _isLoading = false;
   late CreateTravelRequest travel;
   Future<void> sendInvitation(int travelId, String invitedUserEmail) async {
     try {
@@ -76,6 +77,9 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       appBar: AppBar(title: const Text("ABM Viaje")),
       body: Stepper(
@@ -87,14 +91,21 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
           }
 
           if (_currentStep == 1) {
+            setState(() => _isLoading = true); // Mostrar indicador de carga
+
             travel = ref.read(travelFormProvider);
+
             try {
               await ref.read(travelProvider.notifier).createTravel(travel, ref);
+
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Viaje creado con éxito")),
                 );
-                setState(() => _currentStep++);
+                setState(() {
+                  _isLoading = false; // Ocultar indicador de carga
+                  _currentStep++;
+                });
               }
             } catch (e) {
               if (context.mounted) {
@@ -102,10 +113,14 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                   context,
                 ).showSnackBar(SnackBar(content: Text("Error: $e")));
               }
+
+              setState(
+                () => _isLoading = false,
+              ); // Ocultar indicador de carga en caso de error
             }
+
             return;
           }
-
           if (_currentStep < 2) {
             setState(() => _currentStep++);
           }
@@ -131,15 +146,17 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                       await ref.read(saveTravelProvider.notifier).save();
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Viaje guardado con éxito")),
+                          const SnackBar(
+                            content: Text("Viaje guardado con éxito"),
+                          ),
                         );
                         context.push("/home"); // o lo que necesites
                       }
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error: $e")),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text("Error: $e")));
                       }
                     }
                   },

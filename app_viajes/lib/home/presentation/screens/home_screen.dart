@@ -51,8 +51,6 @@ class LoginScreen2 extends ConsumerWidget {
                 final username = _usernameController.text;
                 final password = _passwordController.text;
 
-                print('Usuario: $username, Contraseña: $password');
-
                 final userNotifier = ref.read(userProvider.notifier);
                 await userNotifier.login("usuario", "clave");
                 context.push("/home");

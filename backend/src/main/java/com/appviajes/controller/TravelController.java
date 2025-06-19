@@ -103,5 +103,14 @@ public ResponseEntity<?> generateNewSteps (@PathVariable Long travelId){
 }
 
 
+@DeleteMapping("/{travelId}/deleteTravel/{userId}")
+public ResponseEntity<?> clearUserPreferences(@PathVariable Long travelId,@PathVariable Long userId) {
+	try {
+	    travelService.deleteTravel(travelId,userId);
+	    return ResponseEntity.ok("Viaje eliminado correctamente");
+	} catch (RuntimeException e) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	}
+}
 
 }

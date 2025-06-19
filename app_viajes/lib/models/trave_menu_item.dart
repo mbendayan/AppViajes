@@ -1,3 +1,4 @@
+import 'package:app_viajes/models/preferences.dart';
 import 'package:app_viajes/models/travel.dart';
 
 class TravelMenuItem {
@@ -6,6 +7,7 @@ class TravelMenuItem {
   final DateTime? dateStart;
   final DateTime? dateEnd;
   final int? id;
+  final String? preferences;
 
   const TravelMenuItem({
     this.id = 0,
@@ -13,6 +15,7 @@ class TravelMenuItem {
     this.destination = "",
     this.dateStart,
     this.dateEnd,
+    this.preferences = "",
   });
 
   factory TravelMenuItem.fromTravel(Travel travel) {
@@ -22,6 +25,7 @@ class TravelMenuItem {
       dateStart: travel.startDate,
       dateEnd: travel.endDate,
       id: travel.id,
+      preferences: travel.preferences,
     );
   }
 
@@ -32,6 +36,7 @@ class TravelMenuItem {
       dateStart: DateTime.parse(json['startDate']),
       dateEnd: DateTime.parse(json['endDate']),
       id: json['id'] ?? 0,
+      preferences: json['preferences'] ?? '',
     );
   }
 }

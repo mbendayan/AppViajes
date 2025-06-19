@@ -1,3 +1,4 @@
+import 'package:app_viajes/home/presentation/providers/edit_travel_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,6 +22,7 @@ class GetTravelsScreen extends ConsumerStatefulWidget {
 }
 
 class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
+  bool _isLoading = false;
   List<dynamic> invitations = [];
   bool isLoading = false;
 
@@ -41,8 +43,51 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
     }
   }
 
-  void _removeItem(TravelMenuItem item) {
-    // Acá podrías agregar lógica para eliminar el viaje si es necesario
+  void _removeItem(TravelMenuItem item) async {
+    setState(() => _isLoading = true); // Mostrar el loading
+    int? id = item.id;
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('userId');
+
+    // URL del endpoint
+    final url = Uri.parse(
+      'http://localhost:8080/travels/$id/deleteTravel/$userId',
+    );
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        _loadUserIdAndFetchTravels();
+        Fluttertoast.showToast(
+          msg: "El viaje se eliminó correctamente.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+      } else {
+        // Manejar error del servidor
+        Fluttertoast.showToast(
+          msg: "Error al eliminar el viaje: ${response.body}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      }
+    } catch (e) {
+      // Manejar error de conexión
+      Fluttertoast.showToast(
+        msg: "Error de conexión: $e",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    } finally {
+      setState(() => _isLoading = false); // Ocultar el loading
+    }
   }
 
   Future<void> fetchInvitations() async {
@@ -231,10 +276,11 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
                 item: item,
                 onDelete: () => _removeItem(item),
                 onEdit:
-                    () => context.push(
-                      "/nuevoViaje",
-                      extra: {'isEditMode': true},
-                    ),
+                    () => {
+                      ref.read(editTraverProvider.notifier).setTravel(item),
+
+                      context.push("/nuevoViaje", extra: {'isEditMode': true}),
+                    },
                 getRecomendations:
                     () => context.push("/verRecomendaciones/${item.id}"),
               );
@@ -258,7 +304,13 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () => context.push("/nuevoViaje"),
+              onPressed:
+                  () => {
+                    ref
+                        .read(editTraverProvider.notifier)
+                        .setTravel(TravelMenuItem()),
+                    context.push("/nuevoViaje"),
+                  },
               tooltip: "Agregar Viaje",
               child: const Icon(Icons.add),
             ),
