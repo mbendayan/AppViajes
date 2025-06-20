@@ -27,24 +27,24 @@ public class GeminiClient implements AIClient {
   private final GeminiApi geminiApi;
 
   private static final String STEPS_CREATION_PROMPT =
-      """
-      Create a travel itinerary to {destination} from {startDate} to {endDate}, based on these preferences: {preferences}. Include enough steps (activities, excursions, etc.) to cover that time.
-      Respond in this JSON format:
-          {
-            "steps": [
-              {
-                "description": "",
-                "startDate": "", // format ISO_LOCAL_DATE_TIME
-                "endDate": "", // format ISO_LOCAL_DATE_TIME
-                "location": "",
-                "name": "",
-                "cost": 0.0,
-                "recommendations": ""
-              }
-            ]
-          }
-      """;
+  """
+  Necesito que generes un itinerario de viaje completamente en español a {destination}, desde {startDate} hasta {endDate}, basado en estas preferencias: {preferences}. Incluir actividades, excursiones y visitas para cubrir toda la duración del viaje.
 
+  Respondé únicamente con este formato JSON:
+  {
+    "steps": [
+      {
+        "description": "",
+        "startDate": "", // formato ISO_LOCAL_DATE_TIME
+        "endDate": "",   // formato ISO_LOCAL_DATE_TIME
+        "location": "",
+        "name": "",
+        "cost": 0.0,
+        "recommendations": ""
+      }
+    ]
+  }
+  """;
   @Override
   public List<TravelStepEntity> generateTravelSteps(TravelEntity travelEntity) {
     var response = geminiApi.generateContent(new GeminiPromptRequest(buildPrompt(travelEntity)));
@@ -132,22 +132,24 @@ private List<String> jsonArrayToList(JSONArray array) {
 
   private String buildNewTravelStepsPrompt(TravelEntity travel){
     return """
-        Necesito que generes una lista de actividades (30 actividades) a modo de itinerario recomendadas para un viaje a {destination}, desde {startDate} hasta {endDate} basadas en estas preferencias: {preferences}. Que incluya excursiones, actividades, visitas, etc. 
-         Responde en este JSON format:
+      Generá una lista de 30 actividades recomendadas para un viaje a {destination}, desde {startDate} hasta {endDate}, en base a estas preferencias: {preferences}. Las actividades deben incluir excursiones, visitas, y eventos, escritas completamente en español.
+      
+      Respondé solo con este formato JSON:
+      {
+        "steps": [
           {
-            "steps": [
-              {
-                "description": "",
-                "startDate": "", // format ISO_LOCAL_DATE_TIME
-                "endDate": "", // format ISO_LOCAL_DATE_TIME
-                "location": "",
-                "name": "",
-                "cost": 0.0,
-                "recommendations": ""
-              }
-            ]
+            "description": "",
+            "startDate": "", // formato ISO_LOCAL_DATE_TIME
+            "endDate": "",   // formato ISO_LOCAL_DATE_TIME
+            "location": "",
+            "name": "",
+            "cost": 0.0,
+            "recommendations": ""
           }
-        """
+        ]
+      }
+      """
+      
         .replace("{destination}", travel.getDestination())
         .replace("{startDate}" , travel.getStartDate().toString())
         .replace("{endDate}", travel.getEndDate().toString())
@@ -156,6 +158,7 @@ private List<String> jsonArrayToList(JSONArray array) {
   }
   private String buildRecommendationPrompt(TravelEntity travel) {
     return """
+    Escribí todo en español neutro. No uses palabras en inglés.
       Necesito una lista de recomendaciones para un viaje a {destination}, desde {startDate} hasta {endDate}. Las recomendaciones deben organizarse en las siguientes secciones, cada una como una lista de frases independientes en formato JSON. No incluyas explicaciones adicionales, solo el JSON con estas claves:
 
 {
