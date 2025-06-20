@@ -103,6 +103,26 @@ class _Step1ViajeState extends ConsumerState<Step1ViajeScreen> {
       lastDate: DateTime(2101),
     );
     if (picked != null) {
+      if (!esInicio && _fechaInicio != null && picked.isBefore(_fechaInicio!)) {
+        showDialog(
+          context: context,
+          builder:
+              (_) => AlertDialog(
+                title: const Text('Error'),
+                content: const Text(
+                  'La fecha de fin no puede ser anterior a la de inicio.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+        );
+        return;
+      }
+
       setState(() {
         if (esInicio) {
           _fechaInicio = picked;

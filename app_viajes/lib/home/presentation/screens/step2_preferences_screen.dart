@@ -197,9 +197,35 @@ class _Step2PreferencesScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  enabled:
-                      !widget.isViewMode, // Deshabilitar si es modo visualizar
-                  onChanged: (_) => _savePreferencesToProvider(),
+                  enabled: !widget.isViewMode, // modo lectura deshabilitado
+                  onChanged: (value) {
+                    final parsed = double.tryParse(value);
+                    if (parsed == null || parsed < 0) {
+                      _budgetController.text = '';
+                      _budgetController.selection = TextSelection.collapsed(
+                        offset: 0,
+                      );
+                      showDialog(
+                        context: context,
+                        builder:
+                            (_) => AlertDialog(
+                              title: const Text('Valor inválido'),
+                              content: const Text(
+                                'El presupuesto debe ser un número mayor o igual a 0.',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                      );
+                      return;
+                    }
+
+                    _savePreferencesToProvider();
+                  },
                 ),
               ),
             ),
