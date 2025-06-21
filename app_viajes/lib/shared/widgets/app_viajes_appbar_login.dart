@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class AppViajesAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -12,12 +11,7 @@ class AppViajesAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Row(
         children: [
-          GestureDetector(
-            onTap: () {
-              context.go('/home');
-            },
-            child: Image.asset('assets/images/logo.jpeg', height: 40),
-          ),
+          Image.asset('assets/images/logo.jpeg', height: 40),
           const SizedBox(width: 8),
           if (title != null)
             Text(title!, style: const TextStyle(color: Colors.black)),

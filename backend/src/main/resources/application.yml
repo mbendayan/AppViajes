@@ -17,4 +17,4 @@ spring:
     hikari:
       maximum-pool-size: 10
 gemini:
-  url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash?key=AIzaSyB_mmfa4J2TdW4atYzqi8DjDJv4wOodTkU
+  url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash?key=AIzaSyDBMjetZ2-7ObKNnHy-WSk41YDKSeDRwm8

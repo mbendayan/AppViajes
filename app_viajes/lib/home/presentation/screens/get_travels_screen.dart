@@ -6,11 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:app_viajes/home/presentation/providers/travel_item_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
 import 'package:app_viajes/models/trave_menu_item.dart';
-import 'package:app_viajes/shared/widgets/app_scaffold.dart';
+import 'package:app_viajes/shared/widgets/app_scaffold_home.dart';
 
 class GetTravelsScreen extends ConsumerStatefulWidget {
   static const name = 'getTravels_screen';
@@ -260,7 +259,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
     final travelItemsState = ref.watch(travelItemProvider);
 
     return AppScaffold(
-      title: 'Gestión de viajes',
+      title: 'Gestión de Viajes',
       body: travelItemsState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),

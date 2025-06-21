@@ -1,7 +1,7 @@
 import 'package:app_viajes/models/step.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:app_viajes/shared/widgets/app_viajes_appbar.dart';
 import 'package:intl/intl.dart';
 
 class VerActividadScreen extends StatelessWidget {
@@ -16,7 +16,7 @@ class VerActividadScreen extends StatelessWidget {
     final LatLng location = LatLng(latitude, longitude);
 
     return Scaffold(
-      appBar: AppBar(title: Text(activity.name)),
+      appBar: AppViajesAppBar(title: activity.name),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
