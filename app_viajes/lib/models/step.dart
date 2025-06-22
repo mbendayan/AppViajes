@@ -15,12 +15,20 @@ class Steps {
     required this.name,
     required this.cost,
     this.recommendations,
-  });
-
+  }) {
+    if (endDate.isBefore(startDate)) {
+      throw ArgumentError(
+        'La fecha de fin no puede ser anterior a la fecha de inicio',
+      );
+    }
+  }
   factory Steps.fromJson(Map<String, dynamic> json) {
     try {
       return Steps(
-        id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? -1,
+        id:
+            json['id'] is int
+                ? json['id']
+                : int.tryParse(json['id'].toString()) ?? -1,
         startDate: DateTime.parse(json['start_date'] ?? json['startDate']),
         endDate: DateTime.parse(json['end_date'] ?? json['endDate']),
         location: json['location'] ?? '',
@@ -45,4 +53,3 @@ class Steps {
     'recommendations': recommendations,
   };
 }
-

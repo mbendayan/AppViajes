@@ -2,7 +2,7 @@ import 'package:app_viajes/home/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:app_viajes/shared/widgets/app_viajes_appbar_login.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -33,7 +33,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       userState.when(
         data: (user) {
           if (user != null) {
-            
             context.push("/home");
           } else {
             _showError('Usuario o contraseña inválidos');
@@ -60,7 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Login'), centerTitle: true),
+      appBar: const AppViajesAppBar(title: 'Login'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -86,15 +85,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             authState.isLoading
                 ? CircularProgressIndicator()
                 : ElevatedButton(
-                    onPressed: _login,
-                    child: Text('Iniciar Sesión'),
-                  ),
+                  onPressed: _login,
+                  child: Text('Iniciar Sesión'),
+                ),
             SizedBox(height: 16.0),
             TextButton(
               onPressed: () => context.push("/registro"),
               child: Text('Registrarse'),
             ),
-           
           ],
         ),
       ),

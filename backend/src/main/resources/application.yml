@@ -10,11 +10,11 @@ spring:
     change-log: classpath:/db.changelog-master.xml
     default-schema: public
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:3648/postgres
     username: postgres
-    password: 1234
+    password: ABCarturo200
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
 gemini:
-  url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash?key=AIzaSyB_mmfa4J2TdW4atYzqi8DjDJv4wOodTkU
+  url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash?key=AIzaSyDBMjetZ2-7ObKNnHy-WSk41YDKSeDRwm8

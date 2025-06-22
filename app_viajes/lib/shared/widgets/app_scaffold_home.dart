@@ -19,7 +19,21 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 1,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                context.go('/home');
+              },
+              child: Image.asset('assets/images/logo.jpeg', height: 40),
+            ),
+            const SizedBox(width: 8),
+            Text(title, style: const TextStyle(color: Colors.black)),
+          ],
+        ),
         actions: [
           ...(actions ?? []),
           IconButton(

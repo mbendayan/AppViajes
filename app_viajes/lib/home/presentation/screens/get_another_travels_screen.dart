@@ -3,7 +3,7 @@ import 'package:app_viajes/models/trave_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:app_viajes/shared/widgets/app_viajes_appbar.dart';
 
 class GetAnotherTravelsScreen extends ConsumerWidget {
   static const name = 'getAnotherTravels_screen';
@@ -15,7 +15,7 @@ class GetAnotherTravelsScreen extends ConsumerWidget {
     final travelItemsState = ref.watch(travelItemProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Gestión de viajes')),
+      appBar: const AppViajesAppBar(title: 'Gestion de Viajes'),
       body: travelItemsState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
@@ -30,8 +30,11 @@ class GetAnotherTravelsScreen extends ConsumerWidget {
               final item = travelMenuItems[index];
               return _CustomListTile(
                 item: item,
-                onViewActivities: () =>
-                    context.push("/nuevoViaje", extra: {'isViewMode': true}),
+                onViewActivities:
+                    () => context.push(
+                      "/nuevoViaje",
+                      extra: {'isViewMode': true},
+                    ),
               );
             },
           );
@@ -45,10 +48,7 @@ class _CustomListTile extends StatelessWidget {
   final TravelMenuItem item;
   final VoidCallback onViewActivities;
 
-  const _CustomListTile({
-    required this.item,
-    required this.onViewActivities,
-  });
+  const _CustomListTile({required this.item, required this.onViewActivities});
 
   @override
   Widget build(BuildContext context) {
