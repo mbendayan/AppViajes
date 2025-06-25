@@ -60,7 +60,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
         data: {'email': email, 'password': password},
       );
 
-      final user = User.fromJson(response.data['user']);
+      final user = User.fromJson(response.data);
 
       state = AsyncValue.data(user);
       return 'success';

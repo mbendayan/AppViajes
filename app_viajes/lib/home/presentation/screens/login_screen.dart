@@ -40,7 +40,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         },
         loading: () {},
         error: (err, stack) {
-          _showError('Error de login: $err');
+          _showError('Usuario o contraseña inválidos');
         },
       );
     } catch (e) {

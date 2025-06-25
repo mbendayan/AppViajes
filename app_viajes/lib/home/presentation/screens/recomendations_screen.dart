@@ -56,11 +56,11 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     }
 
     final categories =
-        recommendations.keys.where((key) => key != 'temperature').toList();
-    final temperature = recommendations['temperature'];
+        recommendations.keys.where((key) => key != 'temperatura').toList();
+    final temperature = recommendations['temperatura'];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Recommendations')),
+      appBar: AppBar(title: const Text('Recomendaciones')),
       body: Column(
         children: [
           if (temperature != null)
@@ -71,7 +71,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Temperature: $temperature',
+                    'temperatura: $temperature',
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),

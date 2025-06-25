@@ -38,12 +38,15 @@ public class UserService {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new RuntimeException("El usuario ya existe");
         }
-
         UserEntity newUser = new UserEntity();
-        newUser.setEmail(registerRequest.getEmail());
-        newUser.setPassword(registerRequest.getPassword()); 
-
-        userRepository.save(newUser);
+        try {
+            newUser.setEmail(registerRequest.getEmail());
+            newUser.setPassword(registerRequest.getPassword()); 
+            userRepository.save(newUser);
+            return newUser;			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
         return newUser;
     }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart'; // Asegurate de importar correctamente
 import 'login_screen.dart';
 
@@ -24,21 +25,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    final result = await ref.read(authProvider.notifier).register(email, password);
+    final result = await ref
+        .read(authProvider.notifier)
+        .register(email, password);
 
     setState(() => _isLoading = false);
 
     if (!mounted) return;
-
     if (result == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+      context.push("/home");
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result)));
     }
   }
 
@@ -72,9 +71,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             _isLoading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
-                    onPressed: _handleRegister,
-                    child: const Text('Registrarse'),
-                  ),
+                  onPressed: _handleRegister,
+                  child: const Text('Registrarse'),
+                ),
           ],
         ),
       ),
