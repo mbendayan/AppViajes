@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_viajes/home/presentation/providers/travel_item_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
 import 'package:app_viajes/models/trave_menu_item.dart';
-import 'package:app_viajes/shared/widgets/app_scaffold_home.dart';
+import 'package:app_viajes/shared/widgets/appbar_home.dart';
 
 class GetTravelsScreen extends ConsumerStatefulWidget {
   static const name = 'getTravels_screen';

@@ -2,7 +2,7 @@ import 'package:app_viajes/home/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app_viajes/shared/widgets/app_viajes_appbar_login.dart';
+import 'package:app_viajes/shared/widgets/appbar_login.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
