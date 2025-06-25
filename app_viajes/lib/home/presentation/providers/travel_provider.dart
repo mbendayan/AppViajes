@@ -43,13 +43,10 @@ class TravelNotifier extends StateNotifier<AsyncValue<List<Travel>>> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data;
-        print("DATA RECIBIDO: $data");
         final created = CreateTravelResponse.fromJson(data);
 
-        // Guardamos las actividades generadas en el provider
        ref.read(generatedStepsProvider.notifier).setSteps(created.steps);
        ref.read(stepsProvider.notifier).setSteps(created.steps);
-       //Guardamos el viaje recien creado
        ref.read(currentTravelProvider.notifier).state = created;
 
 

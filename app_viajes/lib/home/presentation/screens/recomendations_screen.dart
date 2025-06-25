@@ -117,14 +117,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              category,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
+            Text(category, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
@@ -137,10 +130,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: Text(
                       '- ${items[index]}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                      ),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   );
                 },
