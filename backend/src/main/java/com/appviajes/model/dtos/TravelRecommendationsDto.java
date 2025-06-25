@@ -8,21 +8,20 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TravelRecommendationsDto {
-    private List<String> clothing;
-    private List<String> essentials;
-    private List<String> transport;
-    private List<String> activities;
-    private List<String> gastronomy;
-    private String temperature;
+    private List<String> Vestimenta;
+    private List<String> Esenciales;
+    private List<String> Transporte;
+    private List<String> Actividades;
+    private List<String> Gastronomia;
+    private String Temperatura;
 
 public TravelRecommendationsDto() {
-    this.clothing = new ArrayList<>();
-    this.essentials = new ArrayList<>();
-    this.transport = new ArrayList<>();
-    this.activities = new ArrayList<>();
-    this.gastronomy = new ArrayList<>();
-    this.temperature = "";
+    this.Vestimenta = new ArrayList<>();
+    this.Esenciales = new ArrayList<>();
+    this.Transporte = new ArrayList<>();
+    this.Actividades = new ArrayList<>();
+    this.Gastronomia = new ArrayList<>();
+    this.Temperatura = "";
 }
 
-    
 }

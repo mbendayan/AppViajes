@@ -66,12 +66,12 @@ public TravelRecommendationsDto generateRecommendations(TravelEntity travel) {
         JSONObject jsonObject = new JSONObject(json);
 
         TravelRecommendationsDto dto = new TravelRecommendationsDto();
-        dto.setTemperature(jsonObject.getString("temperature"));
-        dto.setClothing(jsonArrayToList(jsonObject.getJSONArray("clothing")));
-        dto.setEssentials(jsonArrayToList(jsonObject.getJSONArray("essentials")));
-        dto.setTransport(jsonArrayToList(jsonObject.getJSONArray("transport")));
-        dto.setActivities(jsonArrayToList(jsonObject.getJSONArray("activities")));
-        dto.setGastronomy(jsonArrayToList(jsonObject.getJSONArray("gastronomy")));
+        dto.setTemperatura(jsonObject.getString("Temperatura"));
+        dto.setVestimenta(jsonArrayToList(jsonObject.getJSONArray("Vestimenta")));
+        dto.setEsenciales(jsonArrayToList(jsonObject.getJSONArray("Esenciales")));
+        dto.setTransporte(jsonArrayToList(jsonObject.getJSONArray("Transporte")));
+        dto.setActividades(jsonArrayToList(jsonObject.getJSONArray("Actividades")));
+        dto.setGastronomia(jsonArrayToList(jsonObject.getJSONArray("Gastronomia")));
 
         return dto;
     } else {
@@ -156,24 +156,23 @@ private List<String> jsonArrayToList(JSONArray array) {
   }
   private String buildRecommendationPrompt(TravelEntity travel) {
     return """
-      Necesito una lista de recomendaciones para un viaje a {destination}, desde {startDate} hasta {endDate}. Las recomendaciones deben organizarse en las siguientes secciones, cada una como una lista de frases independientes en formato JSON. No incluyas explicaciones adicionales, solo el JSON con estas claves:
-
+      Necesito una lista de recomendaciones para un viaje a {destination}, desde {startDate} hasta {endDate}. Las recomendaciones deben organizarse en las siguientes secciones, cada una como una lista de frases independientes en formato JSON. No incluyas explicaciones adicionales, solo el JSON con estas claves:;
 {
-  "clothing": [ ... ],
-  "essentials": [ ... ],
-  "transport": [ ... ],
-  "activities": [ ... ],
-  "gastronomy": [ ... ],
-  "temperature": "Texto breve indicando el rango de temperatura estimado entre {startDate} hasta {endDate}"
+  "Vestimenta": [ ... ],
+  "Esenciales": [ ... ],
+  "Transporte": [ ... ],
+  "Actividades": [ ... ],
+  "Gastronomia": [ ... ],
+  "Temperatura": "Texto breve indicando el rango de temperatura estimado entre {startDate} hasta {endDate}"
 }
 
 Cada sección debe incluir recomendaciones específicas, por ejemplo:
 
-- **clothing**: qué tipo de ropa usar según el clima (frío, calor, lluvia).
-- **essentials**: paraguas, adaptadores de enchufe, protector solar, etc.
-- **transport**: si se usa transporte público o apps como Uber, subte, etc.
-- **activities**: excursiones o eventos destacados en esas fechas.
-- **gastronomy**: platos típicos, lugares populares y opciones sin TACC, veganas o vegetarianas.
+- **Vestimenta**: qué tipo de ropa usar según el clima (frío, calor, lluvia).
+- **Esenciales**: paraguas, adaptadores de enchufe, protector solar, etc.
+- **Transporte**: si se usa transporte público o apps como Uber, subte, etc.
+- **Actividades**: excursiones o eventos destacados en esas fechas.
+- **Temperatura**: platos típicos, lugares populares y opciones sin TACC, veganas o vegetarianas.
 
 Solo respondé el objeto JSON como está estructurado arriba.
 
