@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_viajes/config/theme/app_theme.dart';
 import 'package:app_viajes/home/presentation/providers/save_travel_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_form_provider.dart';
 import 'package:app_viajes/home/presentation/providers/travel_provider.dart';
@@ -81,7 +82,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(
-      appBar: AppBar(title: const Text("ABM Viaje")),
+      appBar: AppBar(title: const Text("Crea tu viaje")),
       body: Stepper(
         currentStep: _currentStep,
         onStepContinue: () async {
@@ -161,7 +162,8 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Color.fromRGBO(74, 92, 146, 1),
+                    foregroundColor: Colors.white,
                     textStyle: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   child: const Text('Guardar'),

@@ -62,7 +62,6 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
     final filteredActivities = getFilteredActivities(sortedActivities);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Actividades del viaje')),
       body: Column(
         children: [
           Padding(

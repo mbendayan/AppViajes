@@ -22,9 +22,7 @@ class ActivitiesScreen extends ConsumerWidget {
       appBar: AppBar(title: Text('Actividades en ${travel.destination}')),
       body: asyncActivities.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Text('Error al cargar actividades: $e'),
-        ),
+        error: (e, _) => Center(child: Text('Error al cargar actividades: $e')),
         data: (activities) => Padding(
           padding: const EdgeInsets.all(16.0),
           child: activities.isEmpty
@@ -35,58 +33,66 @@ class ActivitiesScreen extends ConsumerWidget {
                   ),
                 )
               : ListView.builder(
-                  itemCount: activities.length,
-                  itemBuilder: (context, index) {
-                    final activity = activities[index];
-                    final alreadyAdded = generatedSteps.any((s) => s.id == activity.id);
+  itemCount: activities.length,
+  itemBuilder: (context, index) {
+    final activity = activities[index];
+    final alreadyAdded = generatedSteps.any((s) =>
+      s.name == activity.name &&
+      s.startDate == activity.startDate &&
+      s.endDate == activity.endDate
+    );
 
-                    return Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text(activity.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
-                            Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
-                            Text('Costo: ${activity.cost} USD'),
-                            if (activity.recommendations != null)
-                              Text('Recomendaciones: ${activity.recommendations}'),
-                          ],
-                        ),
-                        trailing: Column(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                alreadyAdded ? Icons.check_circle : Icons.add_circle_outline,
-                                color: alreadyAdded ? Colors.green : null,
-                              ),
-                              onPressed: alreadyAdded
-                                  ? null
-                                  : () {
-                                      generatedNotifier.addStep(activity);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('${activity.name} agregada al viaje')),
-                                      );
-                                    },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.remove_red_eye),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => VerActividadScreen(activity: activity),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+    return Card(
+      key: ValueKey('${activity.name}-${activity.startDate}-${activity.endDate}'),
+      margin: const EdgeInsets.all(8.0),
+      child: ListTile(
+        title: Text(activity.name),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Inicio: ${DateFormat('dd/MM/yyyy').format(activity.startDate)}'),
+            Text('Fin: ${DateFormat('dd/MM/yyyy').format(activity.endDate)}'),
+            Text('Costo: ${activity.cost} USD'),
+            if (activity.recommendations != null)
+              Text('Recomendaciones: ${activity.recommendations}'),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(
+                alreadyAdded ? Icons.check_circle : Icons.add_circle_outline,
+                color: alreadyAdded ? Colors.green : null,
+              ),
+              onPressed: alreadyAdded
+                  ? null
+                  : () {
+                      generatedNotifier.addStep(activity);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${activity.name} agregada al viaje')),
+                      );
+                    },
+            ),
+            IconButton(
+              icon: const Icon(Icons.remove_red_eye),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerActividadScreen(activity: activity),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  },
+),
+
         ),
       ),
     );

@@ -14,10 +14,18 @@ class GeneratedStepsNotifier extends StateNotifier<List<Steps>> {
   }
 
   void addStep(Steps step) {
-    if (!state.any((s) => s.id == step.id)) {
-      state = [...state, step];
-    }
+  final exists = state.any((s) =>
+    s.name == step.name &&
+    s.startDate == step.startDate &&
+    s.endDate == step.endDate
+  );
+
+  if (!exists) {
+    state = [...state, step];
   }
+}
+
+
 
   void removeStep(int id) {
     state = state.where((s) => s.id != id).toList();
