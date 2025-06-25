@@ -3,7 +3,7 @@ import 'package:app_viajes/models/trave_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app_viajes/shared/widgets/app_viajes_appbar.dart';
+import 'package:app_viajes/shared/widgets/appbar_go_home.dart';
 
 class GetAnotherTravelsScreen extends ConsumerWidget {
   static const name = 'getAnotherTravels_screen';
