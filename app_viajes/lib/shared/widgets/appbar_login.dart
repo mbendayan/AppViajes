@@ -11,7 +11,7 @@ class AppViajesAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Row(
         children: [
-          Image.asset('assets/images/logo.jpeg', height: 40),
+          Image.asset('assets/images/aa.png', height: 40),
           const SizedBox(width: 8),
           if (title != null)
             Text(title!, style: const TextStyle(color: Colors.black)),

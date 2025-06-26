@@ -27,7 +27,7 @@ class AppScaffold extends StatelessWidget {
               onTap: () {
                 context.go('/home');
               },
-              child: Image.asset('assets/images/logo.jpeg', height: 40),
+              child: Image.asset('assets/images/aa.png', height: 40),
             ),
             const SizedBox(width: 8),
             Text(title, style: const TextStyle(color: Colors.black)),
