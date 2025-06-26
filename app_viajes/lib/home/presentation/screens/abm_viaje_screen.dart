@@ -92,7 +92,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
           }
 
           if (_currentStep == 1) {
-            setState(() => _isLoading = true); // Mostrar indicador de carga
+            setState(() => _isLoading = true);
 
             travel = ref.read(travelFormProvider);
 
@@ -104,7 +104,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                   const SnackBar(content: Text("Viaje creado con éxito")),
                 );
                 setState(() {
-                  _isLoading = false; // Ocultar indicador de carga
+                  _isLoading = false;
                   _currentStep++;
                 });
               }
@@ -115,9 +115,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                 ).showSnackBar(SnackBar(content: Text("Error: $e")));
               }
 
-              setState(
-                () => _isLoading = false,
-              ); // Ocultar indicador de carga en caso de error
+              setState(() => _isLoading = false);
             }
 
             return;
@@ -207,10 +205,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
             title: const Text("Preferencias del viaje"),
             isActive: _currentStep == 1,
             content: Step2PreferencesScreen(
-              onSaved: () {
-                // En este caso no se necesita lógica adicional aquí,
-                // porque Step2PreferencesScreen ya guarda usando Riverpod.
-              },
+              onSaved: () {},
               isViewMode: widget.isViewMode,
             ),
           ),
@@ -219,10 +214,8 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
             title: const Text("Actividades del viaje"),
             isActive: _currentStep == 2,
             content: SizedBox(
-              height: 400, // Define un tamaño fijo
-              child: Step3ActividadScreen(
-                isViewMode: widget.isViewMode,
-              ), // Pasar el modo
+              height: 400,
+              child: Step3ActividadScreen(isViewMode: widget.isViewMode),
             ),
           ),
         ],

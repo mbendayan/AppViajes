@@ -14,7 +14,6 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   String? _selectedTravelType;
   List<String> _selectedTransports = [];
 
-  // Identificador del panel expandido actualmente
   String? _expandedSection;
 
   final List<Map<String, dynamic>> _accommodationOptions = [

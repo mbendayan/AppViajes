@@ -7,7 +7,6 @@ final citySuggestionsProvider = FutureProvider<List<String>>((ref) async {
 
   if (query.isEmpty || query.length < 2) return [];
 
-  // Llamada API con Dio (igual que tenés)
   final dio = Dio();
   final response = await dio.get(
     'https://wft-geo-db.p.rapidapi.com/v1/geo/cities',

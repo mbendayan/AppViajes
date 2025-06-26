@@ -28,7 +28,6 @@ class _Step2PreferencesScreenState
     final travel = ref.read(editTraverProvider);
 
     if (travel.id != 0) {
-      // Lee las preferencias del objeto TravelMenuItem si el id no es 0
       final preferences = jsonDecode(travel.preferences ?? '{}');
       _budgetController.text = preferences['presupuesto'] ?? '';
       _selectedAccommodation = preferences['tipoAlojamiento'];
@@ -37,7 +36,7 @@ class _Step2PreferencesScreenState
         preferences['tipoTransporte'] ?? [],
       );
     } else {
-      // Inicializa las preferencias predeterminadas
+      // inicializa si id =0
       _budgetController.text = '';
       _selectedAccommodation = null;
       _selectedTravelType = null;
