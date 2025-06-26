@@ -53,7 +53,6 @@ class _Step3ActividadState extends ConsumerState<Step3ActividadScreen> {
     final activities = ref.watch(generatedStepsProvider);
     final generatedStepsNotifier = ref.read(generatedStepsProvider.notifier);
 
-    // Ordenamos por fecha
     final sortedActivities = [...activities]
       ..sort((a, b) => a.startDate.compareTo(b.startDate));
     final filteredActivities = getFilteredActivities(sortedActivities);

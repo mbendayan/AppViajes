@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Step2PreferencesScreen extends ConsumerStatefulWidget {
   final VoidCallback? onSaved;
-  final bool isViewMode; // Nuevo parámetro para modo visualizar
+  final bool isViewMode;
 
   const Step2PreferencesScreen({
     super.key,
@@ -36,7 +36,6 @@ class _Step2PreferencesScreenState
         preferences['tipoTransporte'] ?? [],
       );
     } else {
-      // inicializa si id =0
       _budgetController.text = '';
       _selectedAccommodation = null;
       _selectedTravelType = null;
@@ -196,7 +195,7 @@ class _Step2PreferencesScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  enabled: !widget.isViewMode, // modo lectura deshabilitado
+                  enabled: !widget.isViewMode,
                   onChanged: (value) {
                     final parsed = double.tryParse(value);
                     if (parsed == null || parsed < 0) {

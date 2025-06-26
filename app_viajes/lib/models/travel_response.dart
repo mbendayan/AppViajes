@@ -1,6 +1,5 @@
 import 'package:app_viajes/models/step.dart';
 
-
 class CreateTravelResponse {
   final int id;
   final String name;
@@ -18,27 +17,34 @@ class CreateTravelResponse {
 
   factory CreateTravelResponse.fromJson(Map<String, dynamic> json) {
     try {
-      final id = json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? -1;
+      final id =
+          json['id'] is int
+              ? json['id']
+              : int.tryParse(json['id'].toString()) ?? -1;
       final name = json['name'] ?? '';
       final destination = json['destination'] ?? '';
-      
-      // Si preferences es un Map, lo convertimos a String
+
       final preferencesRaw = json['preferences'];
-      final preferences = preferencesRaw is String
-          ? preferencesRaw
-          : preferencesRaw != null
+      final preferences =
+          preferencesRaw is String
+              ? preferencesRaw
+              : preferencesRaw != null
               ? preferencesRaw.toString()
               : '';
 
       final stepsRaw = json['steps'] as List<dynamic>? ?? [];
-      final steps = stepsRaw.map((e) {
-        try {
-          return Steps.fromJson(e);
-        } catch (e) {
-          print("⚠️ Error parseando un Step individual: $e");
-          return null;
-        }
-      }).whereType<Steps>().toList();
+      final steps =
+          stepsRaw
+              .map((e) {
+                try {
+                  return Steps.fromJson(e);
+                } catch (e) {
+                  print("⚠️ Error parseando un Step individual: $e");
+                  return null;
+                }
+              })
+              .whereType<Steps>()
+              .toList();
 
       return CreateTravelResponse(
         id: id,
@@ -55,10 +61,10 @@ class CreateTravelResponse {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'preferences': preferences,
-        'destination': destination,
-        'steps': steps.map((e) => e.toJson()).toList(),
-      };
+    'id': id,
+    'name': name,
+    'preferences': preferences,
+    'destination': destination,
+    'steps': steps.map((e) => e.toJson()).toList(),
+  };
 }

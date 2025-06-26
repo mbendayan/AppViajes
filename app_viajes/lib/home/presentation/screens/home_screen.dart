@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return LoginScreen2(); // Solo devuelve el contenido
+    return LoginScreen2();
   }
 }
 

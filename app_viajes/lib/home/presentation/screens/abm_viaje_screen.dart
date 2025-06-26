@@ -149,7 +149,7 @@ class _ABMViajeScreenState extends ConsumerState<ABMViajeScreen> {
                             content: Text("Viaje guardado con éxito"),
                           ),
                         );
-                        context.push("/home"); // o lo que necesites
+                        context.push("/home");
                       }
                     } catch (e) {
                       if (context.mounted) {
