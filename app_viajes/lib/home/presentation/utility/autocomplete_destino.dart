@@ -14,7 +14,8 @@ class DestinoAutocompleteField extends StatefulWidget {
   });
 
   @override
-  State<DestinoAutocompleteField> createState() => _DestinoAutocompleteFieldState();
+  State<DestinoAutocompleteField> createState() =>
+      _DestinoAutocompleteFieldState();
 }
 
 class _DestinoAutocompleteFieldState extends State<DestinoAutocompleteField> {
@@ -35,21 +36,23 @@ class _DestinoAutocompleteFieldState extends State<DestinoAutocompleteField> {
         final dio = Dio();
         final response = await dio.get(
           'https://wft-geo-db.p.rapidapi.com/v1/geo/cities',
-          queryParameters: {'namePrefix': pattern, 'limit': 5}, // 5 para mostrar menos
+          queryParameters: {'namePrefix': pattern, 'limit': 5},
           options: Options(
             headers: {
-              'X-RapidAPI-Key': '57c9600775msh20cb60f6c4a9ebap180d78jsn67fe35586ede',
+              'X-RapidAPI-Key':
+                  '57c9600775msh20cb60f6c4a9ebap180d78jsn67fe35586ede',
               'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
             },
           ),
         );
 
         final data = response.data['data'] as List;
-        final suggestions = data.map((city) {
-          final cityName = city['city'];
-          final country = city['country'];
-          return "$cityName, $country";
-        }).toList();
+        final suggestions =
+            data.map((city) {
+              final cityName = city['city'];
+              final country = city['country'];
+              return "$cityName, $country";
+            }).toList();
 
         completer.complete(suggestions);
       } catch (e) {

@@ -36,7 +36,6 @@ class _TranslationScreenState extends State<TranslationScreen> {
     'Francés': 'fr',
     'Alemán': 'de',
     'Italiano': 'it',
-    // Agrega más idiomas según sea necesario
   };
 
   String _getCodeFromName(String name) {
@@ -53,7 +52,6 @@ class _TranslationScreenState extends State<TranslationScreen> {
       _translatedText = 'Traduciendo...';
     });
 
-    // Ahora usamos la clave de API directamente desde la constante
     if (_geminiApiKey.isEmpty) {
       setState(() {
         _translatedText = 'La clave de API de Gemini no ha sido configurada.';

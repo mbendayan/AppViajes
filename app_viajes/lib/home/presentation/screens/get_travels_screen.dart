@@ -43,7 +43,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
   }
 
   void _removeItem(TravelMenuItem item) async {
-    setState(() => _isLoading = true); // Mostrar el loading
+    setState(() => _isLoading = true);
     int? id = item.id;
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getInt('userId');
@@ -65,7 +65,6 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
           textColor: Colors.white,
         );
       } else {
-        // Manejar error del servidor
         Fluttertoast.showToast(
           msg: "Error al eliminar el viaje: ${response.body}",
           toastLength: Toast.LENGTH_SHORT,
@@ -145,11 +144,9 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
           gravity: ToastGravity.BOTTOM,
         );
 
-        Navigator.of(dialogContext).pop(); // ❗Cerrar el diálogo
+        Navigator.of(dialogContext).pop();
 
-        await fetchInvitations(); // Actualizar invitaciones
-
-        // 🔄 Recargar viajes después de aceptar
+        await fetchInvitations();
         if (response == "ACCEPTED" && userId != null) {
           await ref.read(travelProvider.notifier).fetchUserTravels(userId);
         }
