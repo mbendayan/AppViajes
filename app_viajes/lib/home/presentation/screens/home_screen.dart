@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return LoginScreen2(); // Solo devuelve el contenido
+    return LoginScreen2();
   }
 }
 
@@ -47,7 +47,6 @@ class LoginScreen2 extends ConsumerWidget {
             SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () async {
-                // Acción para iniciar sesión
                 final username = _usernameController.text;
                 final password = _passwordController.text;
 
@@ -60,14 +59,12 @@ class LoginScreen2 extends ConsumerWidget {
             SizedBox(height: 16.0),
             TextButton(
               onPressed: () {
-                // Acción para registrarse
                 context.push("/registro");
               },
               child: Text('Registrarse'),
             ),
             TextButton(
               onPressed: () {
-                // Acción para ir a preferencias
                 context.push("/preferences");
               },
               child: Text('Preferencias'),

@@ -10,34 +10,13 @@ class DioClient {
     if (_dio != null) return _dio!;
 
     final baseUrl = _getBaseUrl();
-    
 
-    _dio = Dio(BaseOptions(baseUrl: baseUrl, 
-     headers: {
-          'Content-Type': 'application/json', // 👈 importante
-        },
-        ));
-
-    
-
-    /*_dio!.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          final prefs = await SharedPreferences.getInstance();
-          final token = prefs.getString('auth_token');
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          handler.next(options);
-        },
-        onError: (e, handler) {
-          // Manejo opcional de errores globales
-          return handler.next(e);
-        },
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        headers: {'Content-Type': 'application/json'},
       ),
-    );*/
-
-    
+    );
 
     return _dio!;
   }

@@ -43,12 +43,11 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
   }
 
   void _removeItem(TravelMenuItem item) async {
-    setState(() => _isLoading = true); // Mostrar el loading
+    setState(() => _isLoading = true);
     int? id = item.id;
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getInt('userId');
 
-    // URL del endpoint
     final url = Uri.parse(
       'http://localhost:8080/travels/$id/deleteTravel/$userId',
     );
@@ -66,7 +65,6 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
           textColor: Colors.white,
         );
       } else {
-        // Manejar error del servidor
         Fluttertoast.showToast(
           msg: "Error al eliminar el viaje: ${response.body}",
           toastLength: Toast.LENGTH_SHORT,
@@ -76,7 +74,6 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
         );
       }
     } catch (e) {
-      // Manejar error de conexión
       Fluttertoast.showToast(
         msg: "Error de conexión: $e",
         toastLength: Toast.LENGTH_SHORT,
@@ -85,7 +82,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
         textColor: Colors.white,
       );
     } finally {
-      setState(() => _isLoading = false); // Ocultar el loading
+      setState(() => _isLoading = false);
     }
   }
 
@@ -122,7 +119,7 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
   Future<void> respondToInvitation(
     int invitationId,
     String response,
-    BuildContext dialogContext, // para cerrar el diálogo
+    BuildContext dialogContext,
   ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -147,11 +144,9 @@ class _GetTravelsScreenState extends ConsumerState<GetTravelsScreen> {
           gravity: ToastGravity.BOTTOM,
         );
 
-        Navigator.of(dialogContext).pop(); // ❗Cerrar el diálogo
+        Navigator.of(dialogContext).pop();
 
-        await fetchInvitations(); // Actualizar invitaciones
-
-        // 🔄 Recargar viajes después de aceptar
+        await fetchInvitations();
         if (response == "ACCEPTED" && userId != null) {
           await ref.read(travelProvider.notifier).fetchUserTravels(userId);
         }

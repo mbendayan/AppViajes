@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-// Eliminamos: import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TranslationScreen extends StatefulWidget {
   const TranslationScreen({super.key});
@@ -10,10 +9,7 @@ class TranslationScreen extends StatefulWidget {
 }
 
 class _TranslationScreenState extends State<TranslationScreen> {
-  // --- ¡AQUÍ ES DONDE PONES TU API KEY DIRECTAMENTE! ---
-  // Reemplaza 'TU_CLAVE_DE_API_DE_GEMINI_AQUI' con tu clave real.
   static const String _geminiApiKey = 'AIzaSyB_mmfa4J2TdW4atYzqi8DjDJv4wOodTkU';
-  // ---------------------------------------------------
 
   final _textController = TextEditingController();
   String _translatedText = '';
@@ -40,7 +36,6 @@ class _TranslationScreenState extends State<TranslationScreen> {
     'Francés': 'fr',
     'Alemán': 'de',
     'Italiano': 'it',
-    // Agrega más idiomas según sea necesario
   };
 
   String _getCodeFromName(String name) {
@@ -57,7 +52,6 @@ class _TranslationScreenState extends State<TranslationScreen> {
       _translatedText = 'Traduciendo...';
     });
 
-    // Ahora usamos la clave de API directamente desde la constante
     if (_geminiApiKey.isEmpty) {
       setState(() {
         _translatedText = 'La clave de API de Gemini no ha sido configurada.';
@@ -67,7 +61,10 @@ class _TranslationScreenState extends State<TranslationScreen> {
     }
 
     try {
-      final model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: _geminiApiKey);
+      final model = GenerativeModel(
+        model: 'gemini-2.0-flash',
+        apiKey: _geminiApiKey,
+      );
       final content = [
         Content.text(
           'Traduce la siguiente frase de "$sourceLanguageCode" a "$targetLanguageCode": "$text"',

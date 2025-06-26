@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 final List<Color> colorList = [
-  Color(0xFF0A0E1A), // Azul oscuro del logo (nuevo primer color)
+  Color(0xFF0A0E1A),
   Colors.red,
   Colors.green,
   Colors.blue,
@@ -26,12 +26,12 @@ class AppTheme {
   final int selectedColor;
   final bool isDarkMode;
 
-  AppTheme({
-    this.selectedColor = 0,
-    this.isDarkMode = false,
-  })  : assert(selectedColor >= 0, 'selectedColor must be >= 0'),
-        assert(selectedColor < colorList.length,
-            'selectedColor must be < colorList.length');
+  AppTheme({this.selectedColor = 0, this.isDarkMode = false})
+    : assert(selectedColor >= 0, 'selectedColor must be >= 0'),
+      assert(
+        selectedColor < colorList.length,
+        'selectedColor must be < colorList.length',
+      );
 
   ThemeData getTheme() {
     final seed = colorList[selectedColor];
@@ -53,10 +53,7 @@ class AppTheme {
     );
   }
 
-  AppTheme copyWith({
-    int? selectedColor,
-    bool? isDarkMode,
-  }) {
+  AppTheme copyWith({int? selectedColor, bool? isDarkMode}) {
     return AppTheme(
       selectedColor: selectedColor ?? this.selectedColor,
       isDarkMode: isDarkMode ?? this.isDarkMode,
